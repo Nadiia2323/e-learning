@@ -16,6 +16,9 @@ if (session && session.user) {
   )
 }
   return (
-    <div onClick={() => signIn()}>SignInButton</div>
+    <div>
+       <button onClick={() => signIn()}>SignIn</button>
+    </div>
+   
   )
 }
