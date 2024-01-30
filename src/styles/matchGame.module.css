@@ -1,0 +1,72 @@
+/* .wordsColumn,
+.descriptionsColumn {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    min-height: 100px;
+    width: 100%;
+}
+.matchGameContainer{
+display: flex;
+flex-direction: row;
+}
+
+.button {
+    margin: 5px;
+    display: block;
+} */
+
+.matchGameContainer {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.wordsColumn,
+.descriptionsColumn {
+    flex: 1;
+    margin: 10px;
+}
+
+.wordContainer,
+.descriptionContainer {
+    background-color: #f7f7f7;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.wordButton,
+.descriptionButton {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    background-color: #fff;
+    cursor: pointer;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 5px;
+}
+
+.wordButton:hover,
+.descriptionButton:hover {
+    background-color: #eaeaea;
+}
+
+.matchedPair {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.resetButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: red;
+    font-size: 1.2em;
+}
