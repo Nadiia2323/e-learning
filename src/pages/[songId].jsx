@@ -1,13 +1,23 @@
 import clientPromise from "@/utils/mongodb";
 import { ObjectId } from "mongodb";
 import MatchGame from "./component/MatchGame";
+import ClozeTest from "./component/ClozeTest";
 
 export async function getServerSideProps(context) {
   const songId = context.params.songId;
-  console.log("songId :>> ", songId);
-
   const client = await clientPromise;
   const db = client.db("e-learning");
+  const test = await db
+    .collection("sentenceOptions")
+    .findOne({ _id: new ObjectId("65ba4e6312a1c760cffdb42f") });
+  console.log("test", test);
+
+  //?FINF ANOTHER WAY TO POPULATE
+  // const songs = await db
+  //   .collection("lyrics")
+  //   .findOne({ lyric: "Believer" })
+  //   .populate({ path: "reading" });
+  // console.log("songs", songs);
 
   const objectId = new ObjectId(songId);
   const song = await db
@@ -17,25 +27,59 @@ export async function getServerSideProps(context) {
         $match: { _id: objectId },
       },
       {
-        $unwind: "$speaking",
-      },
-      {
         $lookup: {
           from: "speaking",
           localField: "speaking",
           foreignField: "_id",
-          as: "speakingDetails",
+          as: "speaking",
+          pipeline: [
+            {
+              $lookup: {
+                from: "wordPairs",
+                localField: "wordPairs",
+                foreignField: "_id",
+                as: "wordPairs",
+              },
+            },
+          ],
         },
       },
       {
-        $unwind: "$speakingDetails",
+        $unwind: {
+          path: "$speaking",
+          preserveNullAndEmptyArrays: true,
+        },
       },
       {
         $lookup: {
-          from: "wordPairs",
-          localField: "speakingDetails.wordPairs",
+          from: "reading",
+          localField: "reading",
           foreignField: "_id",
-          as: "speakingDetails.wordPairs",
+          as: "reading",
+          pipeline: [
+            {
+              $lookup: {
+                from: "clozeTest",
+                localField: "test",
+                foreignField: "_id",
+                as: "clozeTest",
+              },
+            },
+            {
+              $lookup: {
+                from: "sentenceOptions",
+                localField: "testOp",
+                foreignField: "_id",
+                as: "sentenceOptions",
+              },
+            },
+          ],
+        },
+      },
+      {
+        $unwind: {
+          path: "$reading",
+          preserveNullAndEmptyArrays: true,
         },
       },
       {
@@ -44,7 +88,8 @@ export async function getServerSideProps(context) {
           lyric: { $first: "$lyric" },
           author: { $first: "$author" },
           video: { $first: "$video" },
-          speaking: { $push: "$speakingDetails" },
+          speaking: { $first: "$speaking" },
+          reading: { $first: "$reading" },
         },
       },
     ])
@@ -76,18 +121,29 @@ export default function Details({ song }) {
 
       <div>
         <h2>Speaking Questions</h2>
-        {song.speaking.map((speakingItem, index) => (
-          <div key={index}>
-            <h3>Task: {speakingItem.wordPairs[0].name}</h3>
-            {speakingItem.questions.map((question, qIndex) => (
-              <p key={qIndex}>{question}</p>
-            ))}
+        <div>
+          <h2>Speaking Questions</h2>
+          {song.speaking && (
+            <div>
+              <h3>Task: {song.speaking.wordPairs[0].name}</h3>
+              {song.speaking.questions.map((question, qIndex) => (
+                <p key={qIndex}>{question}</p>
+              ))}
 
-            <h4>Match Words with Their Description</h4>
+              <h4>Match Words with Their Description</h4>
+              <MatchGame pairs={song.speaking.wordPairs[0].pairs} />
+            </div>
+          )}
+        </div>
 
-            <MatchGame pairs={speakingItem.wordPairs[0].pairs} />
-          </div>
-        ))}
+        <div>
+          {song.reading && (
+            <>
+              <h2>{song.reading.clozeTest[0].name}</h2>
+              <ClozeTest clozeT={song.reading.clozeTest[0].content} />
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
