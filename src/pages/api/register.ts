@@ -1,6 +1,6 @@
 import { encryptPassword } from "@/utils/encryptPassword";
 import clientPromise from "@/utils/mongodb";
-import userSchema from "./models/userSchema"; 
+import userSchema from "../../models/userSchema"; 
 
 export default async function registerUser(req, res) {
     if (req.method === "POST") {

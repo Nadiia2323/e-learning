@@ -1,104 +1,104 @@
-import clientPromise from "@/utils/mongodb";
-import { ObjectId } from "mongodb";
+// import clientPromise from "@/utils/mongodb";
+// import { ObjectId } from "mongodb";
 import MatchGame from "./component/MatchGame";
 import ClozeTest from "./component/ClozeTest";
 
-export async function getServerSideProps(context) {
-  const songId = context.params.songId;
-  const client = await clientPromise;
-  const db = client.db("e-learning");
-  const test = await db
-    .collection("sentenceOptions")
-    .findOne({ _id: new ObjectId("65ba4e6312a1c760cffdb42f") });
-  console.log("test", test);
+// export async function getServerSideProps(context) {
+//   const songId = context.params.songId;
+//   const client = await clientPromise;
+//   const db = client.db("e-learning");
+//   const test = await db
+//     .collection("sentenceOptions")
+//     .findOne({ _id: new ObjectId("65ba4e6312a1c760cffdb42f") });
+//   console.log("test", test);
 
-  //?FINF ANOTHER WAY TO POPULATE
-  // const songs = await db
-  //   .collection("lyrics")
-  //   .findOne({ lyric: "Believer" })
-  //   .populate({ path: "reading" });
-  // console.log("songs", songs);
+//   //?FINF ANOTHER WAY TO POPULATE
+//   // const songs = await db
+//   //   .collection("lyrics")
+//   //   .findOne({ lyric: "Believer" })
+//   //   .populate({ path: "reading" });
+//   // console.log("songs", songs);
 
-  const objectId = new ObjectId(songId);
-  const song = await db
-    .collection("lyrics")
-    .aggregate([
-      {
-        $match: { _id: objectId },
-      },
-      {
-        $lookup: {
-          from: "speaking",
-          localField: "speaking",
-          foreignField: "_id",
-          as: "speaking",
-          pipeline: [
-            {
-              $lookup: {
-                from: "wordPairs",
-                localField: "wordPairs",
-                foreignField: "_id",
-                as: "wordPairs",
-              },
-            },
-          ],
-        },
-      },
-      {
-        $unwind: {
-          path: "$speaking",
-          preserveNullAndEmptyArrays: true,
-        },
-      },
-      {
-        $lookup: {
-          from: "reading",
-          localField: "reading",
-          foreignField: "_id",
-          as: "reading",
-          pipeline: [
-            {
-              $lookup: {
-                from: "clozeTest",
-                localField: "test",
-                foreignField: "_id",
-                as: "clozeTest",
-              },
-            },
-            {
-              $lookup: {
-                from: "sentenceOptions",
-                localField: "testOp",
-                foreignField: "_id",
-                as: "sentenceOptions",
-              },
-            },
-          ],
-        },
-      },
-      {
-        $unwind: {
-          path: "$reading",
-          preserveNullAndEmptyArrays: true,
-        },
-      },
-      {
-        $group: {
-          _id: "$_id",
-          lyric: { $first: "$lyric" },
-          author: { $first: "$author" },
-          video: { $first: "$video" },
-          speaking: { $first: "$speaking" },
-          reading: { $first: "$reading" },
-        },
-      },
-    ])
-    .toArray();
+//   const objectId = new ObjectId(songId);
+//   const song = await db
+//     .collection("lyrics")
+//     .aggregate([
+//       {
+//         $match: { _id: objectId },
+//       },
+//       {
+//         $lookup: {
+//           from: "speaking",
+//           localField: "speaking",
+//           foreignField: "_id",
+//           as: "speaking",
+//           pipeline: [
+//             {
+//               $lookup: {
+//                 from: "wordPairs",
+//                 localField: "wordPairs",
+//                 foreignField: "_id",
+//                 as: "wordPairs",
+//               },
+//             },
+//           ],
+//         },
+//       },
+//       {
+//         $unwind: {
+//           path: "$speaking",
+//           preserveNullAndEmptyArrays: true,
+//         },
+//       },
+//       {
+//         $lookup: {
+//           from: "reading",
+//           localField: "reading",
+//           foreignField: "_id",
+//           as: "reading",
+//           pipeline: [
+//             {
+//               $lookup: {
+//                 from: "clozeTest",
+//                 localField: "test",
+//                 foreignField: "_id",
+//                 as: "clozeTest",
+//               },
+//             },
+//             {
+//               $lookup: {
+//                 from: "sentenceOptions",
+//                 localField: "testOp",
+//                 foreignField: "_id",
+//                 as: "sentenceOptions",
+//               },
+//             },
+//           ],
+//         },
+//       },
+//       {
+//         $unwind: {
+//           path: "$reading",
+//           preserveNullAndEmptyArrays: true,
+//         },
+//       },
+//       {
+//         $group: {
+//           _id: "$_id",
+//           lyric: { $first: "$lyric" },
+//           author: { $first: "$author" },
+//           video: { $first: "$video" },
+//           speaking: { $first: "$speaking" },
+//           reading: { $first: "$reading" },
+//         },
+//       },
+//     ])
+//     .toArray();
 
-  return {
-    props: { song: song[0] ? JSON.parse(JSON.stringify(song[0])) : null },
-  };
-}
+//   return {
+//     props: { song: song[0] ? JSON.parse(JSON.stringify(song[0])) : null },
+//   };
+// }
 
 export default function Details({ song }) {
   console.log("song :>> ", song);
