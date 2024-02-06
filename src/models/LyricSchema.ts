@@ -1,32 +1,43 @@
-import mongoose from 'mongoose';
+import mongoose, { Types } from "mongoose";
 
-const Lyric = new  mongoose.Schema({
+export interface LyricType extends mongoose.Document {
+  lyric: string;
+  author: string;
+  video: string;
+  listening: Types.ObjectId;
+  speaking: Types.ObjectId;
+  reading: Types.ObjectId;
+  writting: Types.ObjectId;
+  testYourself: Types.ObjectId;
+}
+
+//REVIEW which ones are required and which not??
+const LyricSchema = new mongoose.Schema({
   lyric: String,
   author: String,
   video: String,
   listening: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Listening' 
+    ref: "Listening",
   },
   speaking: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Speaking' 
+    ref: "Speaking",
   },
   reading: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Reading' 
+    ref: "Reading",
   },
   writing: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Writing' 
+    ref: "Writing",
   },
   testYourself: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'TestYourself' 
-  }
+    ref: "TestYourself",
+  },
 });
 
-export default mongoose.models.Lyric || mongoose.model('lyric', Lyric);
+const LyricModel = mongoose.model("lyric", LyricSchema);
 
-
-
+export default LyricModel;
