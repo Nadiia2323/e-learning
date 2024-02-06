@@ -17,10 +17,10 @@ const speakingSchema = {
         type: [String], // Keywords or main concepts involved in the task
     },
     exampleResponse: {
-        type: String, // An example of a good response for reference
+        type: String,
     },
     additionalResources: {
-        type: [String], // URLs or references to additional materials
+        type: [String], 
     },
     questions: {
         type: [String]

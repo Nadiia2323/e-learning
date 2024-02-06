@@ -3,21 +3,18 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React from 'react'
 import dbConnect from '../utils/dbConnect';
-import Lyric from '@/models/LyricSchema';
+import Lyric from '@/models/lyricSchema';
 
 
 export async function getServerSideProps(context) {
-  try {
+
     await dbConnect();
     const data = await Lyric.findById("65b795bc6104d74ab08ccd44");
     console.log('data server', data)
     return {
       props: { data: JSON.parse(JSON.stringify(data)) },
     };
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    return { props: { data: [] } };
-  }
+ 
 }
 
 

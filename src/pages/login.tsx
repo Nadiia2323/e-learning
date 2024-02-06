@@ -25,7 +25,7 @@ const router = useRouter();
     signIn("credentials", {
       email: credentials.email,
       password: credentials.password,
-      callbackUrl: `${window.location.origin}/landing`,
+      callbackUrl: `${window.location.origin}`,
     });
 };
   const handleSignUp = async (e:React.FormEvent<HTMLFormElement>) => {

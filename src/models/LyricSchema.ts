@@ -1,9 +1,10 @@
 import mongoose from 'mongoose';
+import {Schema} from 'mongoose'
 
-const Lyric = new  mongoose.Schema({
-  lyric: String,
-  author: String,
-  video: String,
+const lyricSchema = new Schema({
+  lyric: { type:String},
+  author: { type:String},
+  video: { type:String},
   listening: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Listening' 
@@ -26,7 +27,7 @@ const Lyric = new  mongoose.Schema({
   }
 });
 
-export default mongoose.models.Lyric || mongoose.model('lyric', Lyric);
+const Lyric = mongoose.model('Lyric',lyricSchema)
 
-
+export default Lyric
 

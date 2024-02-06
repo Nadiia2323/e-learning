@@ -1,6 +1,6 @@
 import Head from "next/head";
 import React from "react";
-import styles from "@/styles/landing.module.css";
+// import styles from "@/styles/landing.module.css";
 import { useRouter } from "next/router";
 
 export default function LandingPage() {
@@ -21,47 +21,7 @@ export default function LandingPage() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className={styles.container}>
-        <div className={styles.textContainer}>
-           <h4 className={styles.text}>Rhythms of Learning: Where Music Meets English Mastery!</h4>
-          <p className={styles.text}>
-            A unique e-learning experience where the soulful world of music
-            meets the mastery of English. Immerse yourself in captivating
-            melodies and lyrics that not only touch your heart but also enhance
-            your language skills. Perfect for music lovers and language learners
-            alike, this program turns each song into a step towards fluency.
-          </p>
-        </div>
-        <div className={styles.mediaContainer}>
-          <div className={styles.videoContainer}>
-            
-                      <img
-            className={styles.bg}
-            src="https://res.cloudinary.com/dqgvmwnpl/image/upload/v1706104998/E-Learning/concept-eternal-theme-about-eternity-music-musical-instruments-good-mood-ascended-aspiration-action-treble-clef-sheet-music_771426-4115_zwn40l.avif"
-            alt="Description"
-            />
-            <div className={styles.viewport}>
-               <h2 className={styles.logo}>Songs that Touch Your Soul </h2>
-            </div>
-             
-                      <video className={styles.video} autoPlay loop muted>
-              <source
-                src="https://res.cloudinary.com/dqgvmwnpl/video/upload/v1706093596/E-Learning/163355_720p_n7m1oe.mp4"
-                type="video/mp4"
-              />
-                      </video>
-          </div>
-
       
-          <div className={styles.darkOverlay}></div>
-        </div>
-
-        
-        <div className={styles.button}>
-          <button onClick={handleLoginClick}>GET STARTED</button> 
-        </div>
-       
-      </div>
     </>
   );
 }

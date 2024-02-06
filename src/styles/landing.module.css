@@ -4,9 +4,19 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-    width: 100%;
+    width: 30%;
     height: 100vh;
     background-color: black;
+    
+}
+.buttonContainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* padding-top: 20%;
+    padding-right: 20%; */
+     width: 30%; 
     
 }
 .videoContainer{
@@ -53,6 +63,13 @@
 .text{
     color: white;
     z-index: 12;
+  
+}
+.quatetext {
+    margin-bottom: 40px;
+    margin-top: 10%;
+    color: white;
+    z-index: 12;
 }
 .container{
     position: relative;
@@ -64,14 +81,21 @@
 
 .viewport {
     overflow: hidden;
+    
     white-space: nowrap;
-    border: 1px solid rgb(250, 250, 250);
-    width: 100px;
+    /* border: 1px solid rgb(250, 250, 250); */
+    width: 80%;
     /* Адаптируйте ширину под свои нужды */
-    height: 20px;
+    height: 40px;
 }
 .textContainer{
-    width: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    width: 30%;
+    padding-left: 3%;
 }
 
 .viewport h2 {
@@ -92,3 +116,68 @@
         /* Полное перемещение текста за пределы левой стороны */
     }
 }
+
+.glowMe,
+.glowAll {
+    opacity: 0;
+    transition: opacity 300ms linear 0s;
+}
+
+.svgStyle {
+    width: 15vw;
+    height: 15vw;
+    cursor: pointer;
+}
+
+.svgStyle:hover .glowMe {
+    opacity: 0.5;
+}
+
+.svgStyle:hover .glowAll {
+    opacity: 1;
+}
+
+.buttonTop {
+    fill: #ec0f29;
+    transition: fill 300ms linear 0s;
+}
+
+.svgStyle:hover .buttonTop {
+    fill: #ef5959;
+}
+
+.buttonSides {
+    fill: #5b1b1b;
+    transition: fill 300ms linear 0s;
+}
+
+.svgStyle:hover .buttonSides {
+    fill: #c23a3a;
+}
+
+.svgStyle:focus {
+    outline: none;
+}
+
+.svgStyle:focus .buttonTop,
+.svgStyle:focus .playSides {
+    stroke: white;
+    stroke-width: 2px;
+}
+
+.svgStyle:focus .playSides {
+    stroke-width: 1px;
+}
+
+.svgStyle:active .buttonTop {
+    fill: #ff9c9c;
+}
+
+/* .svgStyle:nth-of-type(1) {
+    transform: translate(37%, -35%);
+}
+
+.svgStyle:nth-of-type(3) {
+    transform: translate(-37%, 35%);
+} */
+
