@@ -63,20 +63,89 @@ const LyricSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "task",
   },
-  reading: {
+  readingtasks: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Reading",
-  },
-  writing: {
+    ref: "readingtask"
+  }],
+  listeningtasks: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Writing",
+    ref: "listeningtask",
   },
   testYourself: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "TestYourself",
   },
 });
+const readingtasksSchema = new mongoose.Schema({
+  name: {
+    type:String
+  },
 
+  test: {
+   type: mongoose.Schema.Types.ObjectId,
+    ref: "clozetest",
+  },
+  testOp:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "sentenceoption"
+}
+
+})
+const clozetestSchema = new mongoose.Schema({
+  
+  name:{
+type: String
+  },
+
+  content: [{
+    text: String,
+    blank: Boolean
+}]
+})
+
+const sentenceoptionsSchema = new mongoose.Schema({
+ 
+
+  task: [{
+    sentence: String,
+    options: [String],
+    correctAnswers:[String]
+  }],
+  test: {
+    type:String
+  }
+
+})
+
+const listeningtasksSchema = new mongoose.Schema({
+   name: {
+    type:String
+  },
+
+  trueorfalse: {
+   type: mongoose.Schema.Types.ObjectId,
+    ref: "trueorfalse",
+  },
+
+})
+const trueorfalseSchema = new mongoose.Schema({
+   name: {
+    type:String
+  },
+
+  task: [{
+    statement: String,
+    isTrue: Boolean
+   
+  }],
+
+})
+const trueorfalseModel = mongoose.models.trueorfalse || mongoose.model('trueorfalse', trueorfalseSchema)
+
+const listeningtasksModel = mongoose.models.listeningtask || mongoose.model('listeningtask', listeningtasksSchema)
+const SentenceoptionsModel = mongoose.models.sentenceoption || mongoose.model('sentenceoption', sentenceoptionsSchema)
+const ClozetestModel = mongoose.models.clozetest || mongoose.model('clozetest', clozetestSchema)
+const ReadingtaskModel = mongoose.models.readingtask || mongoose.model('readingtask', readingtasksSchema)
 const WordPairsModel =
   mongoose.models.wordPair || mongoose.model("wordPair", wordPairsSchema);
 const LyricModel =
@@ -86,7 +155,7 @@ const UserModel = mongoose.models.user || mongoose.model("user", userSchema);
 const taskModel = mongoose.models.task || mongoose.model("task", taskSchema);
 
 // export default taskModel;
-export { taskModel, UserModel, LyricModel, WordPairsModel };
+export { taskModel, UserModel, LyricModel, WordPairsModel,ReadingtaskModel,ClozetestModel,SentenceoptionsModel,listeningtasksModel,trueorfalseModel };
 
 //Carmdel created to test populate
 //#region

@@ -14,7 +14,7 @@ const ClozeTest = ({ clozeT }) => {
 
     clozeT.forEach((item, index) => {
       if (
-        item.blank === "true" &&
+        item.blank &&
         item.answer.toLowerCase() === userAnswers[index].toLowerCase()
       ) {
         correctCount++;
@@ -23,7 +23,7 @@ const ClozeTest = ({ clozeT }) => {
 
     alert(
       `You got ${correctCount} out of ${
-        clozeT.filter((item) => item.blank === "true").length
+        clozeT.filter((item) => item.blank).length
       } correct.`
     );
   };
@@ -32,21 +32,20 @@ const ClozeTest = ({ clozeT }) => {
     <div>
       <h2>Cloze Test</h2>
       <div>
-        {clozeT.map((item, index) => {
-          if (item.blank === "true") {
-            return (
-              <input
-                key={index}
-                type="text"
-                value={userAnswers[index]}
-                onChange={(e) => handleInputChange(index, e.target.value)}
-                placeholder="Fill in the blank"
-              />
-            );
-          } else {
-            return <span key={index}>{item.text} </span>;
-          }
-        })}
+        {clozeT.map((item, index) =>
+          item.blank ? (
+            // Input for blanks
+            <input
+              key={index}
+              type="text"
+              value={userAnswers[index]}
+              onChange={(e) => handleInputChange(index, e.target.value)}
+              placeholder="Fill in the blank"
+            />
+          ) : (
+            <span key={index}>{item.text} </span>
+          )
+        )}
       </div>
       <button onClick={checkAnswers}>Check Answers</button>
     </div>

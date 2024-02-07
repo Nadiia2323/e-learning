@@ -5,7 +5,7 @@ import React from "react";
 import dbConnect from "../utils/dbConnect";
 
 import dbConnection from "../../lib/dbConnection";
-import { LyricModel } from "@/models/speakingSchema";
+import { LyricModel } from "@/models/Schemas";
 
 export async function getServerSideProps(context) {
   try {
