@@ -20,9 +20,9 @@ const LyricSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Listening",
   },
-  speaking: {
+  tasks: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Speaking",
+    ref: 'task'
   },
   reading: {
     type: mongoose.Schema.Types.ObjectId,
@@ -38,6 +38,6 @@ const LyricSchema = new mongoose.Schema({
   },
 });
 
-const LyricModel = mongoose.model("lyric", LyricSchema);
+const LyricModel = mongoose.models.lyric || mongoose.model('lyric', LyricSchema);
 
-export default LyricModel;
+// export default LyricModel;

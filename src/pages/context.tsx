@@ -3,12 +3,15 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import React from "react";
 import dbConnect from "../utils/dbConnect";
-import LyricModel from "@/models/LyricSchema";
+
+import dbConnection from "../../lib/dbConnection";
+import { LyricModel } from "@/models/speakingSchema";
 
 export async function getServerSideProps(context) {
-
-    await dbConnect();
-    const data = await LyricModel.findById("65b795bc6104d74ab08ccd44");
+  try {
+    // await dbConnect();
+    await dbConnection();
+    const data = await LyricModel.find({});
     console.log("data server", data);
     return {
       props: { data: JSON.parse(JSON.stringify(data)) },
@@ -20,13 +23,13 @@ export async function getServerSideProps(context) {
 }
 
 export default function Context({ data }) {
-  // console.log('data', data)
-  //     const router = useRouter()
-  //     const handlerSelect = (id) => {
-  //   const songId = id.toString();
-  //   router.push(`/${songId}`);
-  // }
-  //     console.log('data :>> ', data);
+  console.log("data client", data);
+  const router = useRouter();
+  const handlerSelect = (id) => {
+    const songId = id.toString();
+    router.push(`/${songId}`);
+  };
+  console.log("data :>> ", data);
   return (
     <>
       <Head>
@@ -36,6 +39,7 @@ export default function Context({ data }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <ul>
+        <h1>{data.lyric}</h1>
         {data &&
           data.map((song, index) => (
             <div key={song._id}>
