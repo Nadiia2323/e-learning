@@ -1,0 +1,101 @@
+
+.container {
+    font-family: Arial, sans-serif;
+    max-width: 800px;
+    margin-left: 10%;
+    margin-top: 5%;
+    /* padding: 20px; */
+}
+.questions {
+    margin: 20px 0;
+    padding: 15px;
+    background-color: #f0f0f0;
+    /* Light grey background */
+    border-left: 5px solid #007bff;
+    /* Blue accent border */
+    border-radius: 5px;
+    /* Rounded corners */
+}
+
+.question {
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #ffffff;
+    /* White background for each question */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* Subtle shadow for depth */
+    border-radius: 4px;
+    /* Rounded corners for question boxes */
+    font-size: 16px;
+    /* Increase font size for readability */
+    line-height: 1.5;
+  
+    color: #333;
+  
+}
+
+
+.question:last-child {
+    margin-bottom: 0;
+}
+.sticker {
+    
+    margin-top: -20%;
+   margin-left: 87%;
+    /* right: 10%; */
+    width: 250px;
+    
+    height: auto;
+   
+    transform: rotate(10deg);
+    
+    border: 10px solid #fff;
+   
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    
+    background-color: #fff;
+   
+    border-radius: 5px;
+   
+}
+
+.heading {
+    color: #333;
+    text-align: center;
+}
+
+.toggleButton {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    display: inline-block;
+}
+
+.toggleButton:hover {
+    background-color: #0056b3;
+}
+
+.section {
+    margin-bottom: 20px;
+}
+
+.task {
+    background-color: #f8f9fa;
+    border-left: 5px solid #007bff;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.iframeContainer {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.iframeContainer iframe {
+    border: 2px solid #007bff;
+    border-radius: 5px;
+}
