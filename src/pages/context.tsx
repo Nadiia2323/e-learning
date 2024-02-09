@@ -6,10 +6,10 @@ import dbConnect from "../utils/dbConnect";
 
 import dbConnection from "../../lib/dbConnection";
 import { LyricModel } from "@/models/Schemas";
+import styles from "@/styles/context.module.css";
 
 export async function getServerSideProps(context) {
   try {
-    // await dbConnect();
     await dbConnection();
     const data = await LyricModel.find({});
     console.log("data server", data);
@@ -38,15 +38,17 @@ export default function Context({ data }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <ul>
-        <h1>{data.lyric}</h1>
+      <ul className={styles.songList}>
         {data &&
           data.map((song, index) => (
-            <div key={song._id}>
-              <h3 onClick={() => handlerSelect(song._id)}>
-                {song.lyric} by {song.author}
-              </h3>
-            </div>
+            <li
+              key={song._id}
+              className={styles.songItem}
+              onClick={() => handlerSelect(song._id)}
+            >
+              <span className={styles.songTitle}>{song.lyric}</span> by{" "}
+              <span className={styles.authorName}>{song.author}</span>
+            </li>
           ))}
       </ul>
     </>

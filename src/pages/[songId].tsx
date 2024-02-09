@@ -6,12 +6,15 @@ import { LyricModel } from "@/models/Schemas";
 import SentenceOptions from "./component/SentenceOptions";
 import TrueOrFalse from "./component/TrueOrFalse";
 import styles from "@/styles/Details.module.css";
+import PictureMatchGame from "./component/PictureMatchGame";
+import TestYouSelf from "./component/TestYouSelf";
 
 export async function getServerSideProps({ params }) {
   await dbConnect();
-  // const task = await trueorfalseModel.find();
+  const { songId } = params;
+  // const task = await testyourselfModel.find();
   // console.log("task :>> ", task);
-  const song = await LyricModel.findById("65c353f69d4bfe27a25f9fc6")
+  const song = await LyricModel.findById(songId)
     .populate({
       path: "tasks",
       strictPopulate: false,
@@ -35,10 +38,20 @@ export async function getServerSideProps({ params }) {
     })
     .populate({
       path: "listeningtasks",
-      populate: {
-        path: "trueorfalse",
-        model: "trueorfalse",
-      },
+      populate: [
+        {
+          path: "trueorfalse",
+          model: "trueorfalse",
+        },
+        {
+          path: "picturematch",
+          model: "picturematchgame",
+        },
+      ],
+    })
+    .populate({
+      path: "testyourself",
+      model: "testyourself",
     });
 
   // console.log("song server :>> ", song);
@@ -55,6 +68,7 @@ export default function Details({ song }) {
   const [showListeningTasks, setShowListeningTasks] = useState(false);
   const [showGrammaTasks, setShowGrammaTasks] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
+  const [testYourself, setTestYourself] = useState(false);
 
   if (!song) {
     return <div>Song not found.</div>;
@@ -65,6 +79,7 @@ export default function Details({ song }) {
   const toggleGrammaTasks = () => setShowGrammaTasks((prev) => !prev);
   const toggleReadingTasks = () => setShowReadingTasks((prev) => !prev);
   const toggleListeningTasks = () => setShowListeningTasks((prev) => !prev);
+  const toggleTestYourself = () => setTestYourself((prev) => !prev);
 
   return (
     <div className={styles.container}>
@@ -74,7 +89,7 @@ export default function Details({ song }) {
         </h2>
       </div>
       <div className={styles.questions}>
-        {song.tasks.questions.map((question, qIndex) => (
+        {song.tasks?.questions?.map((question, qIndex) => (
           <p key={qIndex} className={styles.question}>
             {question}
           </p>
@@ -82,8 +97,8 @@ export default function Details({ song }) {
       </div>
       <div>
         <img
-          src="https://res.cloudinary.com/dqgvmwnpl/image/upload/v1707392022/dog-meme_bdcmlj.gif"
-          alt="Dog Meme Sticker"
+          src={song.tasks?.funpic}
+          alt="Meme Sticker"
           className={styles.sticker}
         />
       </div>
@@ -170,12 +185,31 @@ export default function Details({ song }) {
           >
             Listening Tasks
           </h2>
-          {showListeningTasks && song.listeningtasks && (
-            <div>
-              <h3>{song.listeningtasks.name}</h3>
-              <TrueOrFalse test={song.listeningtasks.trueorfalse.task} />
-            </div>
-          )}
+          {showListeningTasks &&
+            song.listeningtasks.map((task, index) =>
+              task.trueorfalse ? (
+                <div key={index}>
+                  <h3>{task.name}</h3>
+                  <TrueOrFalse test={task.trueorfalse.task} />
+                </div>
+              ) : task.picturematch ? (
+                <div key={index}>
+                  <h3>{task.name}</h3>
+
+                  <PictureMatchGame pairs={task.picturematch.pairs} />
+                </div>
+              ) : null
+            )}
+        </div>
+        <div className={styles.section}>
+          <h2
+            onClick={toggleTestYourself}
+            style={{ cursor: "pointer" }}
+            className={styles.toggleButton}
+          >
+            Test yourself
+          </h2>
+          {testYourself && <TestYouSelf test={song.testyourself} />}
         </div>
       </div>
     </div>

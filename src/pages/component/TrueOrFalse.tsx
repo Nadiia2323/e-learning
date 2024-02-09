@@ -1,7 +1,7 @@
 import React, { useState } from "react";
+import styles from "@/styles/TrueOrFalse.module.css";
 
 export default function TrueOrFalse({ test }) {
-  console.log("test :>> ", test);
   const [answers, setAnswers] = useState({});
   const [feedback, setFeedback] = useState("");
 
@@ -23,20 +23,30 @@ export default function TrueOrFalse({ test }) {
     setFeedback(`You got ${correctCount} out of ${test.length} correct.`);
   };
   return (
-    <div>
+    <div className={styles.container}>
       {test.map((task) => (
-        <div key={task.id}>
+        <div key={task.id} className={styles.statement}>
           <p>{task.statement}</p>
-          <button onClick={() => handleAnswerChange(task.id, true)}>
-            True
-          </button>
-          <button onClick={() => handleAnswerChange(task.id, false)}>
-            False
-          </button>
+          <div className={styles.buttons}>
+            <button
+              className={styles.button}
+              onClick={() => handleAnswerChange(task.id, true)}
+            >
+              True
+            </button>
+            <button
+              className={styles.button}
+              onClick={() => handleAnswerChange(task.id, false)}
+            >
+              False
+            </button>
+          </div>
         </div>
       ))}
-      <button onClick={handleSubmit}>Submit All Answers</button>
-      {feedback && <p>{feedback}</p>}
+      <button className={styles.button} onClick={handleSubmit}>
+        Submit All Answers
+      </button>
+      {feedback && <p className={styles.feedback}>{feedback}</p>}
     </div>
   );
 }

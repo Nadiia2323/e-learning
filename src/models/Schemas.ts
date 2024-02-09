@@ -5,6 +5,9 @@ const taskSchema = new mongoose.Schema({
   questions: {
     type: [String],
   },
+  funpic: {
+    type: String
+  },
   wordPairs: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "wordPair",
@@ -27,7 +30,23 @@ const wordPairsSchema = new mongoose.Schema({
     },
   ],
 });
+const pictureMatchSchema = new mongoose.Schema({
+  name: {
+    type: String,
+  },
 
+  pairs: [
+    {
+      picture: {
+        type: String,
+      },
+
+      description: {
+        type: String,
+      },
+    },
+  ],
+});
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -55,10 +74,10 @@ const LyricSchema = new mongoose.Schema({
   lyric: String,
   author: String,
   video: String,
-  listening: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Listening",
-  },
+  // listening: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: "Listening",
+  // },
   tasks: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "task",
@@ -67,15 +86,31 @@ const LyricSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "readingtask"
   }],
-  listeningtasks: {
+  listeningtasks:[ {
     type: mongoose.Schema.Types.ObjectId,
     ref: "listeningtask",
-  },
-  testYourself: {
+  }],
+  testyourself: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "TestYourself",
+    ref: "testyourself",
   },
 });
+const testyourselfSchema = new mongoose.Schema({
+  name: {
+    type:String
+  },
+  test: [{
+     questionText: String,
+    options: [
+      {
+        optionText: String,
+
+        isCorrect: Boolean
+      },
+      
+    ]
+  }]
+})
 const readingtasksSchema = new mongoose.Schema({
   name: {
     type:String
@@ -126,6 +161,10 @@ const listeningtasksSchema = new mongoose.Schema({
    type: mongoose.Schema.Types.ObjectId,
     ref: "trueorfalse",
   },
+  picturematch: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref:"picturematchgame"
+  }
 
 })
 const trueorfalseSchema = new mongoose.Schema({
@@ -140,6 +179,8 @@ const trueorfalseSchema = new mongoose.Schema({
   }],
 
 })
+const testyourselfModel = mongoose.models.testyourself || mongoose.model("testyourself", testyourselfSchema)
+const pictureMatchModel = mongoose.models.picturematchgame || mongoose.model ("picturematchgame", pictureMatchSchema)
 const trueorfalseModel = mongoose.models.trueorfalse || mongoose.model('trueorfalse', trueorfalseSchema)
 
 const listeningtasksModel = mongoose.models.listeningtask || mongoose.model('listeningtask', listeningtasksSchema)
@@ -155,7 +196,7 @@ const UserModel = mongoose.models.user || mongoose.model("user", userSchema);
 const taskModel = mongoose.models.task || mongoose.model("task", taskSchema);
 
 // export default taskModel;
-export { taskModel, UserModel, LyricModel, WordPairsModel,ReadingtaskModel,ClozetestModel,SentenceoptionsModel,listeningtasksModel,trueorfalseModel };
+export { taskModel, UserModel, LyricModel, WordPairsModel,ReadingtaskModel,ClozetestModel,SentenceoptionsModel,listeningtasksModel,trueorfalseModel,pictureMatchModel,testyourselfModel };
 
 //Carmdel created to test populate
 //#region

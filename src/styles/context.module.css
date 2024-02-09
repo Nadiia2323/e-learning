@@ -1,0 +1,25 @@
+/* styles/SongList.module.css */
+.songList {
+    list-style-type: none;
+    padding: 0;
+}
+
+.songItem {
+    cursor: pointer;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.songItem:hover {
+    background-color: #f0f0f0;
+}
+
+.songTitle {
+    font-size: 20px;
+    color: #333;
+}
+
+.authorName {
+    font-size: 16px;
+    color: #666;
+}
