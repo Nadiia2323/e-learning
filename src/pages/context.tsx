@@ -7,6 +7,8 @@ import dbConnect from "../utils/dbConnect";
 import dbConnection from "../../lib/dbConnection";
 import { LyricModel } from "@/models/Schemas";
 import styles from "@/styles/context.module.css";
+import AppBar from "./component/AppBar";
+import { useSession } from "next-auth/react";
 
 export async function getServerSideProps(context) {
   try {
@@ -24,6 +26,9 @@ export async function getServerSideProps(context) {
 
 export default function Context({ data }) {
   console.log("data client", data);
+  const { data: session } = useSession();
+  const user = session?.user;
+  console.log("user :>> ", user);
   const router = useRouter();
   const handlerSelect = (id) => {
     const songId = id.toString();
@@ -38,6 +43,7 @@ export default function Context({ data }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
       <ul className={styles.songList}>
         {data &&
           data.map((song, index) => (

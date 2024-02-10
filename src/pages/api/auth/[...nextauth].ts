@@ -5,6 +5,7 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { verifyPassword } from "@/utils/encryptPassword";
+import { UserModel } from '@/models/Schemas';
 
 export const authOptions = {
     providers: [
@@ -36,23 +37,23 @@ export const authOptions = {
             const dbClient = await clientPromise;
             const db = dbClient.db("e-learning");
             const existingUser = await db.collection("users").findOne({ email: user.email });
+            //!USERMODEL DOESNR WORK
 
-            if (existingUser) {
-                await db.collection("users").updateOne(
-                    { email: user.email },
-                    { $set: { ...userSchema, lastLogin: new Date() } }
-                );
-                return true;
-            } else {
-                await db.collection("users").insertOne({
-                    ...userSchema,
-                    name: user.name,
-                    email: user.email,
-                    image: user.image, 
-                    lastLogin: new Date(),
-                });
-                return true;
-            }
+          if (existingUser) {
+    await db.collection("users").updateOne(
+        { email: user.email },
+        { $set: { lastLogin: new Date() } } 
+    );
+    return true;
+} else {
+    await db.collection("users").insertOne({
+        name: user.name,
+        email: user.email,
+        image: user.image, 
+        lastLogin: new Date(),
+    });
+    return true;
+}
         }
     }
 }

@@ -5,43 +5,43 @@ import styles from "@/styles/login.module.css";
 import { useRouter } from "next/router";
 
 export default function Login() {
-   const [credentials, setCredentials] = useState({ email: '', password: '' });
+  const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [signUp, setSignUp] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
-const router = useRouter();
+  const router = useRouter();
   const toggleLoginClick = () => {
     setSignUp(!signUp);
   };
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setCredentials(prevCredentials => ({
+    setCredentials((prevCredentials) => ({
       ...prevCredentials,
-      [name]: value
+      [name]: value,
     }));
   };
 
- const handleSignIn = async (e:React.FormEvent<HTMLFormElement>) => {
+  const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     signIn("credentials", {
       email: credentials.email,
       password: credentials.password,
       callbackUrl: `${window.location.origin}`,
     });
-};
-  const handleSignUp = async (e:React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    
+  };
+  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
     if (credentials.password !== confirmPassword) {
-    alert('Passwords do not match');
-    return;
-  }
+      alert("Passwords do not match");
+      return;
+    }
     try {
       const myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
       const urlencoded = new URLSearchParams();
       urlencoded.append("email", credentials.email);
-      urlencoded.append("password",credentials.password);
+      urlencoded.append("password", credentials.password);
 
       const requestOptions = {
         method: "POST",
@@ -49,15 +49,15 @@ const router = useRouter();
         body: urlencoded,
       };
 
-      const response = await fetch("http://localhost:3000/api/register", requestOptions)
-      const result = await response.json()
-      console.log('result :>> ', result);
+      const response = await fetch(
+        "http://localhost:3000/api/register",
+        requestOptions
+      );
+      const result = await response.json();
+      // console.log("result :>> ", result);
       // if (response.ok) {
-      //           router.push('/landing'); 
-      //       }
-
-      
-        
+      //   router.push("/context");
+      // } //!rourer doesnt work
     } catch (error) {
       console.log("error :>> ", error);
     }
@@ -109,14 +109,14 @@ const router = useRouter();
                   onChange={(e) => setConfirmPassword(e.target.value)}
                 />
               </label>
-              <button type="submit" >Sign up</button>
+              <button type="submit">Sign up</button>
             </form>
           ) : (
             <form onSubmit={handleSignIn}>
               <label htmlFor="email">
                 Email
-                  <input
-                    name="email"
+                <input
+                  name="email"
                   type="email"
                   placeholder="email"
                   value={credentials.email}
@@ -125,8 +125,8 @@ const router = useRouter();
               </label>
               <label htmlFor="password">
                 Password
-                  <input
-                    name="password"
+                <input
+                  name="password"
                   type="password"
                   placeholder="password"
                   value={credentials.password}

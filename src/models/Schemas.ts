@@ -60,6 +60,29 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+   lessonsProgress: [
+  {
+    lessonId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Lesson',
+    },
+    progress: {
+      type: Number,
+      default: 0,
+    },
+    completed: {
+      type: Boolean,
+      default: false,
+    },
+    answers: [
+      {
+        taskId: mongoose.Schema.Types.ObjectId,
+        answerType: String, 
+        answerDetails: mongoose.Schema.Types.Mixed, 
+      },
+    ],
+  },
+],
   createdAt: {
     type: Date,
     default: Date.now,
@@ -69,6 +92,19 @@ const userSchema = new mongoose.Schema({
     default: Date.now,
   },
 });
+// const UserAnswerSchema = new mongoose.Schema({
+//   taskId: mongoose.Schema.Types.ObjectId,
+//   answerType: String, // Например, 'cloze-test', 'sentence-options', etc.
+//   answers: [mongoose.Schema.Types.Mixed], // Может быть массивом строк, объектов или идентификаторов в зависимости от типа задания
+// });
+// const UserProgressSchema = new mongoose.Schema({
+//   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+//   lessonId: { type: mongoose.Schema.Types.ObjectId, ref: 'Lesson' },
+//   completed: { type: Boolean, default: false },
+//   progress: { type: Number, default: 0 },
+//   answers: [UserAnswerSchema], // Массив ответов на задания
+// });
+
 
 const LyricSchema = new mongoose.Schema({
   lyric: String,

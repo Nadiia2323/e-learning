@@ -2,11 +2,27 @@ import { shuffleArray } from "@/utils/shuffleArray";
 import React, { useEffect, useState } from "react";
 import styles from "@/styles/ClozeTest.module.css";
 
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import { updateProgress } from "@/utils/updateProgress";
+
 const ClozeTest = ({ clozeTest }) => {
   const [allAnswers, setAllAnswers] = useState([]);
   const [availableAnswers, setAvailableAnswers] = useState([]);
   const [userAnswers, setUserAnswers] = useState(clozeTest.map(() => ""));
   const [prevAnswers, setPrevAnswers] = useState(clozeTest.map(() => ""));
+  const { data: session } = useSession();
+  const userEmail = "test2@test.com";
+  console.log("user :>> ", userEmail);
+
+  // const accessToken = session?.accessToken;
+  // console.log("accessToken :>> ", accessToken);
+  // console.log("user :>> ", user);
+  const router = useRouter();
+  const { songId } = router.query;
+  const lessonId = songId;
+  // console.log("lessnId :>> ", LessonId);
+  // const lessonId = song._id;
 
   useEffect(() => {
     const answers = clozeTest
@@ -38,15 +54,26 @@ const ClozeTest = ({ clozeTest }) => {
     setPrevAnswers(newPrevAnswers);
   };
 
-  const checkAnswers = () => {
+  const checkAnswers = async () => {
     let correctCount = 0;
+    let answers = [];
+
     clozeTest.forEach((item, index) => {
-      if (
-        item.blank &&
-        item.answer.toLowerCase() === userAnswers[index].toLowerCase()
-      ) {
+      const userAnswer = userAnswers[index].toLowerCase();
+      const isCorrect = item.blank && item.answer.toLowerCase() === userAnswer;
+
+      if (isCorrect) {
         correctCount++;
       }
+
+      answers.push({
+        taskId: item._id,
+        answerType: "cloze-test",
+        answerDetails: {
+          userAnswer: userAnswer,
+          isCorrect: isCorrect,
+        },
+      });
     });
 
     alert(
@@ -54,7 +81,21 @@ const ClozeTest = ({ clozeTest }) => {
         clozeTest.filter((item) => item.blank).length
       } correct.`
     );
+
+    if (lessonId) {
+      const progress =
+        (correctCount / clozeTest.filter((item) => item.blank).length) * 100;
+      const completed = progress === 100;
+
+      try {
+        await updateProgress(userEmail, lessonId, progress, completed, answers);
+        console.log("Progress updated successfully");
+      } catch (error) {
+        console.error("Failed to update progress:", error);
+      }
+    }
   };
+
   const resetAnswers = () => {
     setUserAnswers(clozeTest.map(() => ""));
     setAvailableAnswers([...allAnswers]);
