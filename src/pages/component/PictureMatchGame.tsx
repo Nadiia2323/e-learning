@@ -1,10 +1,17 @@
 import { shuffleArray } from "@/utils/shuffleArray";
+import { updateProgress } from "@/utils/updateProgress";
+import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
 
 const PictureMatchGame = ({ pairs }) => {
   const [options, setOptions] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState({});
   const [matches, setMatches] = useState({});
+  const router = useRouter();
+  const { songId } = router.query;
+  const lessonId = songId;
+  console.log("lessonId :>> ", lessonId);
+  const userEmail = "test2@test.com";
 
   useEffect(() => {
     const shuffledDescriptions = shuffleArray(
@@ -34,16 +41,28 @@ const PictureMatchGame = ({ pairs }) => {
       return null;
     });
   };
-  const handleSubmit = () => {
-    let correct = 0;
-    pairs.forEach((pair) => {
-      if (matches[pair._id] === pair.description) {
-        correct++;
-      }
+  const handleSubmit = async () => {
+    let correctCount = 0;
+    const answers = pairs.map((pair) => {
+      const isCorrect = matches[pair._id] === pair.description;
+      if (isCorrect) correctCount++;
+      return {
+        taskId: pair._id,
+        answerType: "pictureMatch",
+        answerDetails: {
+          userAnswer: matches[pair._id],
+          isCorrect,
+        },
+      };
     });
 
+    const progress = (correctCount / pairs.length) * 100;
+    const completed = progress === 100;
+
+    await updateProgress(userEmail, lessonId, progress, completed, answers);
+
     alert(
-      correct === pairs.length
+      correctCount === pairs.length
         ? "All matches are correct!"
         : "Some matches are incorrect."
     );

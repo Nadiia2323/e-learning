@@ -47,6 +47,32 @@ const pictureMatchSchema = new mongoose.Schema({
     },
   ],
 });
+const answerDetailsSchema = new mongoose.Schema({
+  lessonId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Lesson',
+    required: true,
+  },
+  taskId: {
+    type: mongoose.Schema.Types.ObjectId,
+   
+    required: true,
+  },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
+  answerType: {
+    type: String,
+    required: true,
+  },
+  userAnswer: mongoose.Schema.Types.Mixed, 
+  isCorrect: {
+    type: Boolean,
+    required: true,
+  },
+});
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -74,13 +100,10 @@ const userSchema = new mongoose.Schema({
       type: Boolean,
       default: false,
     },
-    answers: [
-      {
-        taskId: mongoose.Schema.Types.ObjectId,
-        answerType: String, 
-        answerDetails: mongoose.Schema.Types.Mixed, 
-      },
-    ],
+      answers: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'answerdetail', 
+    }],
   },
 ],
   createdAt: {
@@ -92,6 +115,14 @@ const userSchema = new mongoose.Schema({
     default: Date.now,
   },
 });
+
+
+
+
+
+
+
+
 // const UserAnswerSchema = new mongoose.Schema({
 //   taskId: mongoose.Schema.Types.ObjectId,
 //   answerType: String, // Например, 'cloze-test', 'sentence-options', etc.
@@ -215,6 +246,7 @@ const trueorfalseSchema = new mongoose.Schema({
   }],
 
 })
+const AnswerDetailModel = mongoose.models.аnswerdetail || mongoose.model('аnswerdetail', answerDetailsSchema);
 const testyourselfModel = mongoose.models.testyourself || mongoose.model("testyourself", testyourselfSchema)
 const pictureMatchModel = mongoose.models.picturematchgame || mongoose.model ("picturematchgame", pictureMatchSchema)
 const trueorfalseModel = mongoose.models.trueorfalse || mongoose.model('trueorfalse', trueorfalseSchema)
@@ -232,7 +264,7 @@ const UserModel = mongoose.models.user || mongoose.model("user", userSchema);
 const taskModel = mongoose.models.task || mongoose.model("task", taskSchema);
 
 // export default taskModel;
-export { taskModel, UserModel, LyricModel, WordPairsModel,ReadingtaskModel,ClozetestModel,SentenceoptionsModel,listeningtasksModel,trueorfalseModel,pictureMatchModel,testyourselfModel };
+export { taskModel, UserModel, LyricModel, WordPairsModel,ReadingtaskModel,ClozetestModel,SentenceoptionsModel,listeningtasksModel,trueorfalseModel,pictureMatchModel,testyourselfModel,AnswerDetailModel };
 
 //Carmdel created to test populate
 //#region

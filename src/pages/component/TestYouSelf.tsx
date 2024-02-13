@@ -1,12 +1,19 @@
 import React, { useState, useEffect } from "react";
 import ModalTest from "./ModalTest";
 import styles from "@/styles/TestYourSelf.module.css";
+import { updateProgress } from "@/utils/updateProgress";
+import { useRouter } from "next/router";
 
 const TestYourself = ({ test }) => {
   const [answers, setAnswers] = useState({});
   const [result, setResult] = useState(null);
   const [resetKey, setResetKey] = useState(0);
   const [showModal, setShowModal] = useState(false);
+  const router = useRouter();
+  const { songId } = router.query;
+  const lessonId = songId;
+  console.log("lessonId :>> ", lessonId);
+  const userEmail = "test2@test.com";
 
   const handleReset = () => {
     setAnswers({});
@@ -20,14 +27,35 @@ const TestYourself = ({ test }) => {
     }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const correctAnswers = Object.values(answers).filter(
       (answer) => answer.isCorrect
     );
-    setResult(
-      `You got ${correctAnswers.length} out of ${test.test.length} correct.`
-    );
+    const resultMessage = `You got ${correctAnswers.length} out of ${test.test.length} correct.`;
+    setResult(resultMessage);
     setShowModal(true);
+
+    const progress = (correctAnswers.length / test.test.length) * 100;
+    const completed = progress === 100;
+
+    const answerDetails = Object.entries(answers).map(
+      ([questionId, { optionId, isCorrect }]) => ({
+        taskId: questionId,
+        answerType: "testYourself",
+        answerDetails: {
+          userAnswer: answers[questionId].answer,
+          isCorrect,
+        },
+      })
+    );
+
+    await updateProgress(
+      userEmail,
+      lessonId,
+      progress,
+      completed,
+      answerDetails
+    );
   };
 
   return (

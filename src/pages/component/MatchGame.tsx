@@ -1,12 +1,19 @@
 import { shuffleArray } from "@/utils/shuffleArray";
 import React, { useEffect, useState } from "react";
 import styles from "@/styles/matchGame.module.css";
+import { updateProgress } from "@/utils/updateProgress";
+import { useRouter } from "next/router";
 
 export default function MatchGame({ pairs }) {
   const [selectedWord, setSelectedWord] = useState(null);
   const [matches, setMatches] = useState({});
   const [shuffledDescriptions, setShuffledDescriptions] = useState([]);
   const [showAnswers, setShowAnswers] = useState(false);
+  const router = useRouter();
+  const { songId } = router.query;
+  const lessonId = songId;
+  console.log("lessonId :>> ", lessonId);
+  const userEmail = "test2@test.com";
 
   useEffect(() => {
     setShuffledDescriptions(
@@ -50,7 +57,7 @@ export default function MatchGame({ pairs }) {
   const unmatchedDescriptions = shuffledDescriptions.filter(
     (desc) => !Object.values(matches).includes(desc)
   );
-  const checkMatches = () => {
+  const checkMatches = async () => {
     let correctCount = 0;
     for (const [word, description] of Object.entries(matches)) {
       if (
@@ -69,7 +76,32 @@ export default function MatchGame({ pairs }) {
         correctCount === 1 ? "match" : "matches"
       } out of ${Object.keys(matches).length}`
     );
+    await sendGameProgress(userEmail, lessonId, matches, pairs);
   };
+  async function sendGameProgress(userEmail, lessonId, matches, pairs) {
+    const answers = Object.keys(matches).map((word) => {
+      const description = matches[word];
+      const pair = pairs.find((pair) => pair.word === word);
+      const isCorrect = pair.description === description;
+      console.log("pair._id :>> ", pair._id);
+      return {
+        taskId: pair._id,
+        answerType: "matchGame",
+        answerDetails: {
+          userAnswer: description,
+          isCorrect,
+        },
+      };
+    });
+
+    const progress =
+      (answers.filter((answer) => answer.answerDetails.isCorrect).length /
+        pairs.length) *
+      100;
+    const completed = progress === 100;
+
+    await updateProgress(userEmail, lessonId, progress, completed, answers);
+  }
 
   return (
     <div className={styles.matchGameContainer}>

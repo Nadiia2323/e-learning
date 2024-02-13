@@ -1,4 +1,4 @@
-import { UserModel } from "@/models/Schemas";
+import { AnswerDetailModel, UserModel } from "@/models/Schemas";
 import dbConnection from "../../../lib/dbConnection";
 import { getSession } from "next-auth/react";
 import { getServerSession } from "next-auth";
@@ -6,24 +6,24 @@ import { authOptions } from "./auth/[...nextauth]";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function updateProgress(req: NextApiRequest, res: NextApiResponse) {
-    //   const session = await getServerSession(req, res, authOptions);
-    //  const session = await getSession({ req });
-//   if (!session) {
-//     return res.status(401).json({ error: "Un" });
-//   }
+  //   const session = await getServerSession(req, res, authOptions);
+  //  const session = await getSession({ req });
+  //   if (!session) {
+  //     return res.status(401).json({ error: "Un" });
+  //   }
 
-//   if (!session) {
+  //   if (!session) {
    
-//     return res.status(401).json({ message: "Unauthorized" });
-//   }
-    // const userId = session.user.id; 
-    // console.log('userId :>> ', userId);
+  //     return res.status(401).json({ message: "Unauthorized" });
+  //   }
+  // const userId = session.user.id; 
+  // console.log('userId :>> ', userId);
   if (req.method !== "PATCH") {
     return res.status(405).end();
   }
 
   try {
-    const {userEmail, lessonId, progress, completed, answers } = req.body;
+    const { userEmail, lessonId, progress, completed, answers } = req.body;
 
     if (!userEmail || !lessonId) {
       return res.status(400).json({ message: "Missing required fields" });
@@ -31,27 +31,33 @@ export default async function updateProgress(req: NextApiRequest, res: NextApiRe
 
     await dbConnection();
 
-    const user = await UserModel.findOne({email: userEmail});
+    const user = await UserModel.findOne({ email: userEmail });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
     
+   const answerIds = await Promise.all(answers.map(async (answer) => {
+  const { taskId, answerType, answerDetails } = answer;
+  const filter = { taskId, userId: user._id, lessonId };
+  const update = { answerType, ...answerDetails };
+  const options = { new: true, upsert: true };
+
+  const detail = await AnswerDetailModel.findOneAndUpdate(filter, update, options);
+  return detail._id;
+}));
+
     const lessonIndex = user.lessonsProgress.findIndex(lp => lp.lessonId.equals(lessonId));
 
     if (lessonIndex > -1) {
-      
       user.lessonsProgress[lessonIndex].progress = progress;
       user.lessonsProgress[lessonIndex].completed = completed;
-      
-      user.lessonsProgress[lessonIndex].answers = answers;
+      user.lessonsProgress[lessonIndex].answers.push(...answerIds); // Добавляем ObjectId новых ответов
     } else {
-      
-      user.lessonsProgress.push({ lessonId, progress, completed, answers });
+      user.lessonsProgress.push({ lessonId, progress, completed, answers: answerIds });
     }
 
     await user.save();
-
     res.status(200).json({ message: "Progress updated successfully" });
   } catch (error) {
     console.error("Error updating progress:", error);
