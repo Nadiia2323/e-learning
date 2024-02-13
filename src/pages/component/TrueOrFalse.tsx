@@ -38,6 +38,7 @@ export default function TrueOrFalse({ test }) {
 
     const progress = (correctCount / test.length) * 100;
     const completed = progress === 100;
+    console.log("answerDetails :>> ", answerDetails);
 
     await updateProgress(
       userEmail,

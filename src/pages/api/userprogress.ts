@@ -23,7 +23,9 @@ export default async function updateProgress(req: NextApiRequest, res: NextApiRe
   }
 
   try {
-    const { userEmail, lessonId, progress, completed, answers } = req.body;
+    const { userEmail, lessonId, progress, completed, answer } = req.body;
+    console.log('body :>> ', req.body);
+ 
 
     if (!userEmail || !lessonId) {
       return res.status(400).json({ message: "Missing required fields" });
@@ -37,8 +39,9 @@ export default async function updateProgress(req: NextApiRequest, res: NextApiRe
     }
 
     
-   const answerIds = await Promise.all(answers.map(async (answer) => {
-  const { taskId, answerType, answerDetails } = answer;
+   const answerIds = await Promise.all(answer.map(async (answer) => {
+     const { taskId, answerType, answerDetails } = answer;
+     console.log('answerDetails :>> ', answerDetails);
   const filter = { taskId, userId: user._id, lessonId };
   const update = { answerType, ...answerDetails };
   const options = { new: true, upsert: true };
@@ -52,7 +55,7 @@ export default async function updateProgress(req: NextApiRequest, res: NextApiRe
     if (lessonIndex > -1) {
       user.lessonsProgress[lessonIndex].progress = progress;
       user.lessonsProgress[lessonIndex].completed = completed;
-      user.lessonsProgress[lessonIndex].answers.push(...answerIds); // Добавляем ObjectId новых ответов
+      user.lessonsProgress[lessonIndex].answers.push(...answerIds); 
     } else {
       user.lessonsProgress.push({ lessonId, progress, completed, answers: answerIds });
     }

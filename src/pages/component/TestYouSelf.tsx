@@ -20,10 +20,10 @@ const TestYourself = ({ test }) => {
     setResult(null);
     setResetKey((prevKey) => prevKey + 1);
   };
-  const handleOptionChange = (questionId, optionId, isCorrect) => {
+  const handleOptionChange = (questionId, optionId, isCorrect, answerText) => {
     setAnswers((prevAnswers) => ({
       ...prevAnswers,
-      [questionId]: { optionId, isCorrect },
+      [questionId]: { optionId, userAnswer: answerText, isCorrect },
     }));
   };
 
@@ -39,15 +39,16 @@ const TestYourself = ({ test }) => {
     const completed = progress === 100;
 
     const answerDetails = Object.entries(answers).map(
-      ([questionId, { optionId, isCorrect }]) => ({
+      ([questionId, answer]) => ({
         taskId: questionId,
-        answerType: "testYourself",
+        answerType: "test yourself",
         answerDetails: {
-          userAnswer: answers[questionId].answer,
-          isCorrect,
+          userAnswer: answer.userAnswer,
+          isCorrect: answer.isCorrect,
         },
       })
     );
+    console.log("answerDetails :>> ", answerDetails);
 
     await updateProgress(
       userEmail,
@@ -71,8 +72,13 @@ const TestYourself = ({ test }) => {
                 name={question._id}
                 value={option.optionText}
                 checked={answers[question._id]?.optionId === option._id}
-                onChange={() =>
-                  handleOptionChange(question._id, option._id, option.isCorrect)
+                onChange={(e) =>
+                  handleOptionChange(
+                    question._id,
+                    option._id,
+                    option.isCorrect,
+                    option.optionText
+                  )
                 }
               />
               {option.optionText}

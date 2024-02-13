@@ -12,7 +12,6 @@
 //     isCorrect: answer.isCorrect,
 //   }));
 
-//   // Вычисление прогресса и состояния завершения урока
 //   const correctAnswersCount = formattedAnswers.filter(
 //     (answer) => answer.isCorrect
 //   ).length;
@@ -51,6 +50,22 @@ async function updateProgress(
   completed,
   answers
 ) {
+  console.log("answers inside update :>> ", answers);
+
+  //handle your answers
+  const answer = answers.map((answer) => {
+    console.log("Mapping answer:", answer);
+    return {
+      taskId: answer.taskId,
+      answerType: answer.answerType,
+      answerDetails: {
+        userAnswer: answer.answerDetails.userAnswer,
+        isCorrect: answer.answerDetails.isCorrect,
+      },
+    };
+  });
+  // console.log("answersTest :>> ", answersTest);
+  // console.log("answerTest. string :>> ", JSON.stringify(answersTest));
   try {
     const response = await fetch("/api/userprogress", {
       method: "PATCH",
@@ -62,14 +77,18 @@ async function updateProgress(
         lessonId,
         progress,
         completed,
-        answers: answers.map((answer) => ({
-          taskId: answer.taskId,
-          answerType: answer.answerType,
-          answerDetails: {
-            userAnswer: answer.userAnswer,
-            isCorrect: answer.isCorrect,
-          },
-        })),
+        // answers: answers.map((answer) => {
+        //   console.log("Mapping answer:", answer);
+        //   return {
+        //     taskId: answer.taskId,
+        //     answerType: answer.answerType,
+        //     answerDetails: {
+        //       userAnswer: answer.userAnswer,
+        //       isCorrect: answer.isCorrect,
+        //     },
+        //   };
+        // }),
+        answer,
       }),
     });
 

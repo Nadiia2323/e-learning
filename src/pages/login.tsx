@@ -1,10 +1,12 @@
 import { signIn, useSession } from "next-auth/react";
 import Head from "next/head";
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, FormEvent, useContext, useState } from "react";
 import styles from "@/styles/login.module.css";
 import { useRouter } from "next/router";
+import { UserContext } from "@/hooks/UserContext";
 
 export default function Login() {
+  const { fetchUser } = useContext(UserContext);
   const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [signUp, setSignUp] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -20,13 +22,22 @@ export default function Login() {
     }));
   };
 
-  const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSignIn = async (e: FormEvent<HTMLFormElement>) => {
+    console.log("signIn");
     e.preventDefault();
-    signIn("credentials", {
+    const siginResponse = await signIn("credentials", {
       email: credentials.email,
       password: credentials.password,
       callbackUrl: `${window.location.origin}`,
+      redirect: false,
     });
+    if (siginResponse?.ok) {
+      fetchUser();
+      //buid your redirect here
+    } else {
+      alert("login first");
+    }
+    // console.log("siginResponse :>> ", siginResponse);
   };
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -112,7 +123,12 @@ export default function Login() {
               <button type="submit">Sign up</button>
             </form>
           ) : (
-            <form onSubmit={handleSignIn}>
+            <>
+              {/* <form
+              onSubmit={(e) => {
+                handleSignIn(e);
+              }}
+            > */}
               <label htmlFor="email">
                 Email
                 <input
@@ -134,9 +150,10 @@ export default function Login() {
                 />
               </label>
               <p className={styles.forgotPassword}>Forgot Password?</p>
-              <button type="submit">Sign in</button>
+              {/* <button type="submit">Sign in</button> */}
+              <button onClick={handleSignIn}>Sign in</button>
               <p>or</p>
-              <button
+              {/* <button
                 className={styles.googleBtn}
                 onClick={() => signIn("google")}
               >
@@ -145,8 +162,9 @@ export default function Login() {
                   className={styles.googleIcon}
                 />
                 Sign in with Google
-              </button>
-            </form>
+              </button> */}
+              {/* </form> */}
+            </>
           )}
 
           <p onClick={toggleLoginClick}>

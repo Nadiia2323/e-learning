@@ -8,6 +8,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const session = await getServerSession(req, res, authOptions);
+  console.log('session api handler route :>> ', session);
   if (session) {
     res.send({
       content:

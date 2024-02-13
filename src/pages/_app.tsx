@@ -2,6 +2,7 @@ import "@/styles/globals.css";
 import { SessionProvider } from "next-auth/react";
 import type { AppProps } from "next/app";
 import ClozeTest from "./component/ClozeTest";
+import { UserProvider } from "@/hooks/UserContext";
 
 export default function App({
   Component,
@@ -9,7 +10,9 @@ export default function App({
 }: AppProps) {
   return (
     <SessionProvider session={pageProps.session}>
-      <Component {...pageProps} />
+      <UserProvider>
+        <Component {...pageProps} />
+      </UserProvider>
     </SessionProvider>
   );
 }
