@@ -2,11 +2,17 @@ import Head from "next/head";
 import Image from "next/image";
 import { Inter } from "next/font/google";
 // import styles from "@/styles/Home.module.css";
+import {
+  faThumbsUp,
+  faThumbsDown,
+  faCommentAlt,
+} from "@fortawesome/free-solid-svg-icons";
 import Providers from "./component/Providers";
 import AppBar from "./component/AppBar";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import styles from "@/styles/landing.module.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -34,25 +40,35 @@ export default function Home() {
           <AppBar />
 
           {session ? (
-            <div>Welcome, {session.user.name}!</div>
-          ) : (
-            <div>Please sign in.</div>
-          )}
+            <div
+              style={{
+                background: "black",
+                display: "flex",
+                justifyContent: "flex-end",
+                paddingRight: "1%",
+              }}
+            >
+              <p style={{ color: "white" }}>Welcome, {session.user.name}!</p>
+            </div>
+          ) : null}
         </Providers>
         <div className={styles.container}>
           <div className={styles.textContainer}>
-            <h4 className={styles.quatetext}>
-              Rhythms of Learning: Where Music Meets English Mastery!
-            </h4>
-            <p className={styles.text}>
-              A unique e-learning experience where the soulful world of music
-              meets the mastery of English. Immerse yourself in captivating
-              melodies and lyrics that not only touch your heart but also
-              enhance your language skills. Perfect for music lovers and
-              language learners alike, this program turns each song into a step
-              towards fluency.
-            </p>
+            <div className={styles.spotlight}>
+              <h4 className={styles.quatetext}>
+                Rhythms of Learning: Where Music Meets English Mastery!
+              </h4>
+              <p className={styles.text}>
+                A unique e-learning experience where the soulful world of music
+                meets the mastery of English. Immerse yourself in captivating
+                melodies and lyrics that not only touch your heart but also
+                enhance your language skills. Perfect for music lovers and
+                language learners alike, this program turns each song into a
+                step towards fluency.
+              </p>
+            </div>
           </div>
+
           <div className={styles.mediaContainer}>
             <div className={styles.videoContainer}>
               <img
@@ -62,6 +78,12 @@ export default function Home() {
               />
               <div className={styles.viewport}>
                 <h2 className={styles.logo}>Songs that Touch Your Soul </h2>
+              </div>
+              <div className={styles.icons}>
+                <FontAwesomeIcon icon={faThumbsUp} className={styles.icon} />
+                <p>124.567 |</p>
+                <FontAwesomeIcon icon={faCommentAlt} className={styles.icon} />
+                <FontAwesomeIcon icon={faThumbsDown} className={styles.icon} />
               </div>
 
               <video className={styles.video} autoPlay loop muted>

@@ -59,8 +59,8 @@ async function updateProgress(
       taskId: answer.taskId,
       answerType: answer.answerType,
       answerDetails: {
-        userAnswer: answer.answerDetails.userAnswer,
-        isCorrect: answer.answerDetails.isCorrect,
+        userAnswer: answer.userAnswer,
+        isCorrect: answer.isCorrect,
       },
     };
   });

@@ -6,7 +6,7 @@ const taskSchema = new mongoose.Schema({
     type: [String],
   },
   funpic: {
-    type: String
+    type: String,
   },
   wordPairs: {
     type: mongoose.Schema.Types.ObjectId,
@@ -50,24 +50,24 @@ const pictureMatchSchema = new mongoose.Schema({
 const answerDetailsSchema = new mongoose.Schema({
   lessonId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Lesson',
+    ref: "Lesson",
     required: true,
   },
   taskId: {
     type: mongoose.Schema.Types.ObjectId,
-   
+
     required: true,
   },
   userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: "User",
     required: true,
   },
   answerType: {
     type: String,
     required: true,
   },
-  userAnswer: mongoose.Schema.Types.Mixed, 
+  userAnswer: mongoose.Schema.Types.Mixed,
   isCorrect: {
     type: Boolean,
     required: true,
@@ -86,26 +86,23 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-   lessonsProgress: [
-  {
-    lessonId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Lesson',
+  lessonsProgress: [
+    {
+      lessonId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Lesson",
+      },
+      progress: {
+        type: Number,
+        default: 0,
+      },
+      completed: {
+        type: Boolean,
+        default: false,
+      },
+      
     },
-    progress: {
-      type: Number,
-      default: 0,
-    },
-    completed: {
-      type: Boolean,
-      default: false,
-    },
-      answers: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'answerdetail', 
-    }],
-  },
-],
+  ],
   createdAt: {
     type: Date,
     default: Date.now,
@@ -114,14 +111,14 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  answers: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "detail",
+        },
+      ],
+ 
 });
-
-
-
-
-
-
-
 
 // const UserAnswerSchema = new mongoose.Schema({
 //   taskId: mongoose.Schema.Types.ObjectId,
@@ -136,7 +133,6 @@ const userSchema = new mongoose.Schema({
 //   answers: [UserAnswerSchema], // Массив ответов на задания
 // });
 
-
 const LyricSchema = new mongoose.Schema({
   lyric: String,
   author: String,
@@ -149,14 +145,18 @@ const LyricSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "task",
   },
-  readingtasks: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "readingtask"
-  }],
-  listeningtasks:[ {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "listeningtask",
-  }],
+  readingtasks: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "readingtask",
+    },
+  ],
+  listeningtasks: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "listeningtask",
+    },
+  ],
   testyourself: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "testyourself",
@@ -164,97 +164,111 @@ const LyricSchema = new mongoose.Schema({
 });
 const testyourselfSchema = new mongoose.Schema({
   name: {
-    type:String
+    type: String,
   },
-  test: [{
-     questionText: String,
-    options: [
-      {
-        optionText: String,
+  test: [
+    {
+      questionText: String,
+      options: [
+        {
+          optionText: String,
 
-        isCorrect: Boolean
-      },
-      
-    ]
-  }]
-})
+          isCorrect: Boolean,
+        },
+      ],
+    },
+  ],
+});
 const readingtasksSchema = new mongoose.Schema({
   name: {
-    type:String
+    type: String,
   },
 
   test: {
-   type: mongoose.Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: "clozetest",
   },
-  testOp:{
+  testOp: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "sentenceoption"
-}
-
-})
+    ref: "sentenceoption",
+  },
+});
 const clozetestSchema = new mongoose.Schema({
-  
-  name:{
-type: String
+  name: {
+    type: String,
   },
 
-  content: [{
-    text: String,
-    blank: Boolean
-}]
-})
+  content: [
+    {
+      text: String,
+      blank: Boolean,
+    },
+  ],
+});
 
 const sentenceoptionsSchema = new mongoose.Schema({
- 
-
-  task: [{
-    sentence: String,
-    options: [String],
-    correctAnswers:[String]
-  }],
+  task: [
+    {
+      sentence: String,
+      options: [String],
+      correctAnswers: [String],
+    },
+  ],
   test: {
-    type:String
-  }
-
-})
+    type: String,
+  },
+});
 
 const listeningtasksSchema = new mongoose.Schema({
-   name: {
-    type:String
+  name: {
+    type: String,
   },
 
   trueorfalse: {
-   type: mongoose.Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: "trueorfalse",
   },
   picturematch: {
     type: mongoose.Schema.Types.ObjectId,
-    ref:"picturematchgame"
-  }
-
-})
+    ref: "picturematchgame",
+  },
+});
 const trueorfalseSchema = new mongoose.Schema({
-   name: {
-    type:String
+  name: {
+    type: String,
   },
 
-  task: [{
-    statement: String,
-    isTrue: Boolean
-   
-  }],
+  task: [
+    {
+      statement: String,
+      isTrue: Boolean,
+    },
+  ],
+});
+const AnswerDetailModel =
+  mongoose.models.detail ||
+  mongoose.model("detail", answerDetailsSchema);
+const testyourselfModel =
+  mongoose.models.testyourself ||
+  mongoose.model("testyourself", testyourselfSchema);
+const pictureMatchModel =
+  mongoose.models.picturematchgame ||
+  mongoose.model("picturematchgame", pictureMatchSchema);
+const trueorfalseModel =
+  mongoose.models.trueorfalse ||
+  mongoose.model("trueorfalse", trueorfalseSchema);
 
-})
-const AnswerDetailModel = mongoose.models.аnswerdetail || mongoose.model('аnswerdetail', answerDetailsSchema);
-const testyourselfModel = mongoose.models.testyourself || mongoose.model("testyourself", testyourselfSchema)
-const pictureMatchModel = mongoose.models.picturematchgame || mongoose.model ("picturematchgame", pictureMatchSchema)
-const trueorfalseModel = mongoose.models.trueorfalse || mongoose.model('trueorfalse', trueorfalseSchema)
-
-const listeningtasksModel = mongoose.models.listeningtask || mongoose.model('listeningtask', listeningtasksSchema)
-const SentenceoptionsModel = mongoose.models.sentenceoption || mongoose.model('sentenceoption', sentenceoptionsSchema)
-const ClozetestModel = mongoose.models.clozetest || mongoose.model('clozetest', clozetestSchema)
-const ReadingtaskModel = mongoose.models.readingtask || mongoose.model('readingtask', readingtasksSchema)
+const listeningtasksModel =
+  mongoose.models.listeningtask ||
+  mongoose.model("listeningtask", listeningtasksSchema);
+const SentenceoptionsModel =
+  mongoose.models.sentenceoption ||
+  mongoose.model("sentenceoption", sentenceoptionsSchema);
+const ClozetestModel =
+  mongoose.models.clozetest || mongoose.model("clozetest", clozetestSchema);
+const ReadingtaskModel =
+  mongoose.models.readingtask ||
+  mongoose.model("readingtask", readingtasksSchema);
 const WordPairsModel =
   mongoose.models.wordPair || mongoose.model("wordPair", wordPairsSchema);
 const LyricModel =
@@ -264,7 +278,20 @@ const UserModel = mongoose.models.user || mongoose.model("user", userSchema);
 const taskModel = mongoose.models.task || mongoose.model("task", taskSchema);
 
 // export default taskModel;
-export { taskModel, UserModel, LyricModel, WordPairsModel,ReadingtaskModel,ClozetestModel,SentenceoptionsModel,listeningtasksModel,trueorfalseModel,pictureMatchModel,testyourselfModel,AnswerDetailModel };
+export {
+  taskModel,
+  UserModel,
+  LyricModel,
+  WordPairsModel,
+  ReadingtaskModel,
+  ClozetestModel,
+  SentenceoptionsModel,
+  listeningtasksModel,
+  trueorfalseModel,
+  pictureMatchModel,
+  testyourselfModel,
+  AnswerDetailModel,
+};
 
 //Carmdel created to test populate
 //#region

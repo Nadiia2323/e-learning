@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import ModalTest from "./ModalTest";
 import styles from "@/styles/TestYourSelf.module.css";
 import { updateProgress } from "@/utils/updateProgress";
 import { useRouter } from "next/router";
+import { UserContext } from "@/hooks/UserContext";
 
 const TestYourself = ({ test }) => {
   const [answers, setAnswers] = useState({});
@@ -14,6 +15,7 @@ const TestYourself = ({ test }) => {
   const lessonId = songId;
   console.log("lessonId :>> ", lessonId);
   const userEmail = "test2@test.com";
+  const { user } = useContext(UserContext);
 
   const handleReset = () => {
     setAnswers({});
@@ -58,6 +60,25 @@ const TestYourself = ({ test }) => {
       answerDetails
     );
   };
+  // const answersData = user.data.answers;
+  // console.log("test :>> ", test);
+  // console.log("answersData :>> ", answersData);
+  // useEffect(() => {
+  //   const initialAnswers = {};
+
+  //   answersData.forEach((answer) => {
+  //     if (answer.lessonId === lessonId) {
+  //       initialAnswers[answer.taskId] = {
+  //         optionId: answer.userAnswer,
+  //         userAnswer: answer.userAnswer,
+  //         isCorrect: answer.isCorrect,
+  //       };
+  //     }
+  //   });
+
+  //   setAnswers(initialAnswers);
+  // }, [answersData, lessonId]);
+  // console.log("answers :>> ", answers);
 
   return (
     <div className={styles.testContainer}>

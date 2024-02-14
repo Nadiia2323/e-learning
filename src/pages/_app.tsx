@@ -1,9 +1,10 @@
 import "@/styles/globals.css";
 import { SessionProvider } from "next-auth/react";
 import type { AppProps } from "next/app";
-import ClozeTest from "./component/ClozeTest";
+import "@fortawesome/fontawesome-svg-core/styles.css";
+import { config } from "@fortawesome/fontawesome-svg-core";
 import { UserProvider } from "@/hooks/UserContext";
-
+config.autoAddCss = false;
 export default function App({
   Component,
   pageProps: { session, ...pageProps },

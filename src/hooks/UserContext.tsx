@@ -20,6 +20,7 @@ export const UserProvider = ({ children }) => {
     } catch (error) {
       console.error("error", error);
     } finally {
+      console.log("finally......");
       setLoading(false);
     }
   };
