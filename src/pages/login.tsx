@@ -33,6 +33,7 @@ export default function Login() {
     });
     if (siginResponse?.ok) {
       fetchUser();
+      router.push(`/context`);
       //buid your redirect here
     } else {
       alert("login first");

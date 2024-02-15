@@ -1,17 +1,21 @@
 import { shuffleArray } from "@/utils/shuffleArray";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styles from "@/styles/ClozeTest.module.css";
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { updateProgress } from "@/utils/updateProgress";
+import { UserContext } from "@/hooks/UserContext";
 
 const ClozeTest = ({ clozeTest }) => {
   const [allAnswers, setAllAnswers] = useState([]);
   const [availableAnswers, setAvailableAnswers] = useState([]);
   const [userAnswers, setUserAnswers] = useState(clozeTest.map(() => ""));
   const [prevAnswers, setPrevAnswers] = useState(clozeTest.map(() => ""));
+  const [isCheckPerformed, setIsCheckPerformed] = useState(false);
   const { data: session } = useSession();
+  const { user } = useContext(UserContext);
+  console.log("userContext :>> ", user);
   const userEmail = "test2@test.com";
   console.log("user :>> ", userEmail);
 
@@ -60,6 +64,7 @@ const ClozeTest = ({ clozeTest }) => {
 
     clozeTest.forEach((item, index) => {
       const userAnswer = userAnswers[index].toLowerCase();
+
       const isCorrect = item.blank && item.answer.toLowerCase() === userAnswer;
 
       if (isCorrect) {
@@ -69,10 +74,8 @@ const ClozeTest = ({ clozeTest }) => {
       answers.push({
         taskId: item._id,
         answerType: "cloze-test",
-        answerDetails: {
-          userAnswer: userAnswer,
-          isCorrect: isCorrect,
-        },
+        userAnswer: userAnswer,
+        isCorrect: isCorrect,
       });
     });
 
@@ -94,6 +97,7 @@ const ClozeTest = ({ clozeTest }) => {
         console.error("Failed to update progress:", error);
       }
     }
+    setIsCheckPerformed(true);
   };
 
   const resetAnswers = () => {
@@ -117,11 +121,18 @@ const ClozeTest = ({ clozeTest }) => {
           <span key={item._id}>
             {item.blank ? (
               <select
-                className={styles.select}
+                className={`${styles.select} ${
+                  isCheckPerformed
+                    ? userAnswers[index].toLowerCase() ===
+                      item.answer.toLowerCase()
+                      ? styles.correct
+                      : styles.incorrect
+                    : ""
+                }`}
                 value={userAnswers[index]}
                 onChange={(event) => handleSelectChange(index, event)}
               >
-                <option value=""></option>\
+                <option value=""></option>
                 {[...availableAnswers, prevAnswers[index]]
                   .filter(Boolean)
                   .sort()

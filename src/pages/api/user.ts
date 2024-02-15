@@ -8,18 +8,13 @@ export default async function handler(req, res) {
   const email = "test2@test.com";
 
   try {
-    // const user = await UserModel.findOne({ email: email }).populate({
-    //   path: "answers",
-    //   populate: {
-    //     path: "lessonId",
-    //   },
-    // });
+   
     const user = await UserModel.findOne({ email: email }).populate({
       path: "answers",
       
     });
     
-    // const user = await UserModel.findOne({ email: email })
+    
 
     console.log("user populate :>> ", user);
 

@@ -9,6 +9,8 @@ export default function MatchGame({ pairs }) {
   const [matches, setMatches] = useState({});
   const [shuffledDescriptions, setShuffledDescriptions] = useState([]);
   const [showAnswers, setShowAnswers] = useState(false);
+  const [checked, setChecked] = useState(false);
+
   const router = useRouter();
   const { songId } = router.query;
   const lessonId = songId;
@@ -77,6 +79,7 @@ export default function MatchGame({ pairs }) {
       } out of ${Object.keys(matches).length}`
     );
     await sendGameProgress(userEmail, lessonId, matches, pairs);
+    setChecked(true);
   };
   async function sendGameProgress(userEmail, lessonId, matches, pairs) {
     const answers = Object.keys(matches).map((word) => {
@@ -104,72 +107,80 @@ export default function MatchGame({ pairs }) {
   }
 
   return (
-    <div className={styles.matchGameContainer}>
-      <div className={styles.wordsColumn}>
-        {matchedWords.map((word, index) => (
-          <div key={index} className={styles.wordContainer}>
-            <button className={styles.wordButton}>{word}</button>
-            <div className={styles.resetButtonContainer}>
-              <button
-                onClick={() => handleResetMatch(word)}
-                className={styles.resetButton}
-              >
-                ×
-              </button>
-            </div>
-          </div>
-        ))}
-        {unmatchedWords.map((word, index) => (
-          <div key={index} className={styles.wordContainer}>
-            <button
-              onClick={() => handleWordSelection(word)}
-              className={styles.wordButton}
-            >
-              {word}
-            </button>
-          </div>
-        ))}
-      </div>
-      <div className={styles.descriptionsColumn}>
-        {matchedWords.map((word, index) =>
-          matches[word] ? (
+    <>
+      <div className={styles.matchGameContainer}>
+        <div className={styles.wordsColumn}>
+          {matchedWords.map((word, index) => (
             <div key={index} className={styles.wordContainer}>
-              <button key={index} className={styles.descriptionButton} disabled>
-                {matches[word]}
-              </button>
+              <button className={styles.wordButton}>{word}</button>
               <div className={styles.resetButtonContainer}>
                 <button
                   onClick={() => handleResetMatch(word)}
                   className={styles.resetButton}
-                ></button>
+                >
+                  ×
+                </button>
               </div>
             </div>
-          ) : null
-        )}
-        {unmatchedDescriptions.map((description, index) => (
-          <button
-            key={index}
-            onClick={() => handleDescriptionSelection(description)}
-            className={styles.descriptionButton}
-            disabled={Object.values(matches).includes(description)}
-          >
-            {description}
-          </button>
-        ))}
-
+          ))}
+          {unmatchedWords.map((word, index) => (
+            <div key={index} className={styles.wordContainer}>
+              <button
+                onClick={() => handleWordSelection(word)}
+                className={styles.wordButton}
+              >
+                {word}
+              </button>
+            </div>
+          ))}
+        </div>
+        <div className={styles.descriptionsColumn}>
+          {matchedWords.map((word, index) =>
+            matches[word] ? (
+              <div key={index} className={styles.wordContainer}>
+                <button
+                  key={index}
+                  className={styles.descriptionButton}
+                  disabled
+                >
+                  {matches[word]}
+                </button>
+                <div className={styles.resetButtonContainer}>
+                  <button
+                    onClick={() => handleResetMatch(word)}
+                    className={styles.resetButton}
+                  ></button>
+                </div>
+              </div>
+            ) : null
+          )}
+          {unmatchedDescriptions.map((description, index) => (
+            <div key={index} className={styles.descriptionContainer}>
+              <button
+                onClick={() => handleDescriptionSelection(description)}
+                className={styles.descriptionButton}
+                disabled={Object.values(matches).includes(description)}
+              >
+                {description}
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className={styles.buttons}>
         <button onClick={checkMatches} className={styles.checkButton}>
           Check Matches
         </button>
-        <button
+        {/* <button
           onClick={() => setShowAnswers(true)}
           className={styles.showAnswersButton}
         >
           Show Answers
-        </button>
+        </button> */}
         <button onClick={resetGame} className={styles.resetButton}>
           Reset Game
         </button>
       </div>
-    </div>
+    </>
   );
 }

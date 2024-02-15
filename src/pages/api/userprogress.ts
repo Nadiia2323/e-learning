@@ -1,17 +1,14 @@
 import { AnswerDetailModel, UserModel } from "@/models/Schemas";
 import dbConnection from "../../../lib/dbConnection";
-import { getSession } from "next-auth/react";
-import { getServerSession } from "next-auth";
-import { authOptions } from "./auth/[...nextauth]";
-import { NextApiRequest, NextApiResponse } from "next";
 
-export default async function updateProgress(req: NextApiRequest, res: NextApiResponse) {
+export default async function updateProgress(req, res) {
   if (req.method !== "PATCH") {
     return res.status(405).end();
   }
 
   try {
     const { userEmail, lessonId, progress, completed, answers } = req.body;
+    console.log('answers.userAnswer :>> ', answers);
 
     if (!userEmail || !lessonId) {
       return res.status(400).json({ message: "Missing required fields" });
@@ -19,37 +16,43 @@ export default async function updateProgress(req: NextApiRequest, res: NextApiRe
 
     await dbConnection();
 
+    
     const user = await UserModel.findOne({ email: userEmail });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
+ 
+    let updatedAnswerIds = [];
+
+
+  for (let answerDetail of answers) {
+  const { taskId, answerType, answerDetails } = answerDetail; 
+  console.log('userAnswer :>> ', answerDetail);
+
+  const { userAnswer, isCorrect } = answerDetails || {}; //after this or it doesnt want to save text
+
+  const filter = { taskId, userId: user._id, lessonId };
+  const update = { answerType, userAnswer, isCorrect };
+  console.log('update :>> ', update);
+
+  const options = { new: true, upsert: true };
+
+  const detail = await AnswerDetailModel.findOneAndUpdate(filter, update, options);
+  updatedAnswerIds.push(detail._id);
+}
+
     
-    const updatedAnswerIds = await Promise.all(answers.map(async (answerDetail) => {
-      const { taskId, answerType, answerDetails } = answerDetail;
-      const filter = { taskId, userId: user._id, lessonId };
-      const update = { answerType, ...answerDetails };
-      const options = { new: true, upsert: true };
+    user.answers = [...new Set([...user.answers, ...updatedAnswerIds.map(id => id.toString())])];
 
-      const detail = await AnswerDetailModel.findOneAndUpdate(filter, update, options);
-      return detail._id;
-    }));
 
-    
-    user.answers = [...user.answers, ...updatedAnswerIds];
-
-   
-    const lessonProgressIndex = user.lessonsProgress.findIndex(lp => lp.lessonId.equals(lessonId));
+  
+    const lessonProgressIndex = user.lessonsProgress.findIndex(lp => lp.lessonId.toString() === lessonId);
     if (lessonProgressIndex >= 0) {
       user.lessonsProgress[lessonProgressIndex].progress = progress;
       user.lessonsProgress[lessonProgressIndex].completed = completed;
     } else {
-      user.lessonsProgress.push({
-        lessonId,
-        progress,
-        completed,
-        
-      });
+      user.lessonsProgress.push({ lessonId, progress, completed });
     }
 
     await user.save();
@@ -60,6 +63,7 @@ export default async function updateProgress(req: NextApiRequest, res: NextApiRe
     res.status(500).json({ message: "Internal server error" });
   }
 }
+
 
 
 // export default async function updateProgress(req: NextApiRequest, res: NextApiResponse) {

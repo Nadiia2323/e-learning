@@ -121,6 +121,7 @@ export default function Details({ song }) {
           ></iframe>
         </div>
       )}
+      <br />
       <div className={styles.section}>
         <h2
           onClick={toggleReadingTasks}
@@ -146,6 +147,7 @@ export default function Details({ song }) {
             </div>
           ))}
       </div>
+
       <div className={styles.section}>
         <h2
           onClick={toggleSpeakingTasks}
@@ -160,6 +162,7 @@ export default function Details({ song }) {
             <MatchGame pairs={song.tasks.wordPairs.pairs} />
           </div>
         )}
+        <br />
 
         <div className={styles.section}>
           <h2

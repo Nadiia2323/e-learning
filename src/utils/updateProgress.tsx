@@ -43,53 +43,29 @@
 //   }
 // }
 // export { updateProgress };
+
 async function updateProgress(
   userEmail,
   lessonId,
   progress,
   completed,
-  answers
+  answerDetails
 ) {
-  console.log("answers inside update :>> ", answers);
+  const requestBody = {
+    userEmail,
+    lessonId,
+    progress,
+    completed,
+    answers: answerDetails,
+  };
 
-  //handle your answers
-  const answer = answers.map((answer) => {
-    console.log("Mapping answer:", answer);
-    return {
-      taskId: answer.taskId,
-      answerType: answer.answerType,
-      answerDetails: {
-        userAnswer: answer.userAnswer,
-        isCorrect: answer.isCorrect,
-      },
-    };
-  });
-  // console.log("answersTest :>> ", answersTest);
-  // console.log("answerTest. string :>> ", JSON.stringify(answersTest));
   try {
     const response = await fetch("/api/userprogress", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        userEmail,
-        lessonId,
-        progress,
-        completed,
-        // answers: answers.map((answer) => {
-        //   console.log("Mapping answer:", answer);
-        //   return {
-        //     taskId: answer.taskId,
-        //     answerType: answer.answerType,
-        //     answerDetails: {
-        //       userAnswer: answer.userAnswer,
-        //       isCorrect: answer.isCorrect,
-        //     },
-        //   };
-        // }),
-        answer,
-      }),
+      body: JSON.stringify(requestBody),
     });
 
     const data = await response.json();
@@ -102,4 +78,5 @@ async function updateProgress(
     console.error("Error updating progress:", error);
   }
 }
+
 export { updateProgress };

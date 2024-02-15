@@ -7,6 +7,7 @@ import { UserContext } from "@/hooks/UserContext";
 
 const TestYourself = ({ test }) => {
   const [answers, setAnswers] = useState({});
+  const [answersData, setAnswersData] = useState({});
   const [result, setResult] = useState(null);
   const [resetKey, setResetKey] = useState(0);
   const [showModal, setShowModal] = useState(false);
@@ -22,10 +23,12 @@ const TestYourself = ({ test }) => {
     setResult(null);
     setResetKey((prevKey) => prevKey + 1);
   };
-  const handleOptionChange = (questionId, optionId, isCorrect, answerText) => {
+
+  const handleOptionChange = (questionId, optionId, isCorrect, optionText) => {
+    console.log("optionText :>> ", optionText);
     setAnswers((prevAnswers) => ({
       ...prevAnswers,
-      [questionId]: { optionId, userAnswer: answerText, isCorrect },
+      [questionId]: { optionId, userAnswer: optionText, isCorrect },
     }));
   };
 
@@ -60,29 +63,121 @@ const TestYourself = ({ test }) => {
       answerDetails
     );
   };
-  // const answersData = user.data.answers;
-  // console.log("test :>> ", test);
-  // console.log("answersData :>> ", answersData);
   // useEffect(() => {
-  //   const initialAnswers = {};
+  //   console.log("Loaded answers from context:", user.data.answers);
+  //   if (user.data && user.data.answers) {
+  //     const lessonAnswers = user.data.answers.filter(
+  //       (answer) => answer.lessonId === lessonId
+  //     );
+  //     const formattedAnswers = {};
 
-  //   answersData.forEach((answer) => {
-  //     if (answer.lessonId === lessonId) {
-  //       initialAnswers[answer.taskId] = {
+  //     for (let answer of lessonAnswers) {
+  //       formattedAnswers[answer.taskId] = {
   //         optionId: answer.userAnswer,
-  //         userAnswer: answer.userAnswer,
   //         isCorrect: answer.isCorrect,
   //       };
   //     }
-  //   });
 
-  //   setAnswers(initialAnswers);
-  // }, [answersData, lessonId]);
+  //     setAnswersData(formattedAnswers);
+  //   }
+  // }, [user.data, lessonId]);
+  // console.log(
+  //   "answer[65cde73b2db69c2c2a84b9d6].optionId :>> ",
+  //   answers["65cde73b2db69c2c2a84b9d6"].optionId
+  // );
+
   // console.log("answers :>> ", answers);
+  // console.log("user :>> ", user);
+  // console.log("test :>> ", test);
 
   return (
     <div className={styles.testContainer}>
       <h2>{test.name}</h2>
+      {/* {test.test.map((question) => (
+        <div key={question._id}>
+          <p className={styles.question}>{question.questionText}</p> */}
+
+      {/* {question.options.map((option) => {
+            // Вставка console.log для вывода значений
+            // console.log(
+            //   "Checking:",
+            //   question._id,
+            //   "Option ID:",
+            //   answers[question._id]?.optionId,
+            //   "Option Text:",
+            //   option.optionText
+            // );
+            console.log("%c answers :>>", "color:red", answers);
+            console.log("%c option :>>", "color:orange", option);
+            const option2 = () => {
+              for (const key in answersData) {
+                // if (Object.prototype.hasOwnProperty.call(object, key)) {
+                //   const element = object[key];
+                // }
+                console.log(" answers[key] :>> ", answersData[key]);
+                answersData[key].optionId === option.optionText;
+
+                return answersData[key];
+              }
+            };
+            const option3 = option2();
+            console.log("option3 :>> ", option3);
+            console.log("%c question :>> ", "color:green", question);
+            console.log(
+              "%c answers[question._id] :>> ",
+              "color:green",
+              answers
+            );
+            return (
+              <div key={option3?._id} className={styles.option}>
+                <input
+                  type="radio"
+                  name={question._id}
+                  value={option.optionText}
+                  // checked={
+                  //   answers[question._id]?.optionId === option3?.optionText
+                  // }
+                  onChange={(e) =>
+                    handleOptionChange(
+                      question._id,
+                      option?.optionText,
+                      option?.isCorrect
+                    )
+                  }
+                />
+                {option?.optionText}
+              </div>
+            );
+          })}
+        </div>
+      ))}
+      {/* {test.test.map((question) => (
+        <div key={question._id}>
+          <p className={styles.question}>{question.questionText}</p>
+          {question.options.map((option) => (
+            <div key={option._id} className={styles.option}>
+              <input
+                type="radio"
+                name={question._id}
+                value={option.optionText}
+                checked={
+                  answers[question._id] &&
+                  answers[question._id].optionId === option.optionText
+                }
+                onChange={(e) =>
+                  handleOptionChange(
+                    question._id,
+                    option.optionText,
+                    option.isCorrect
+                  )
+                }
+              />
+              {option.optionText}
+            </div>
+          ))}
+        </div>
+              ))} */}
+
       {test.test.map((question) => (
         <div key={question._id}>
           <p className={styles.question}>{question.questionText}</p>
