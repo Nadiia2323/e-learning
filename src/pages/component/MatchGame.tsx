@@ -8,7 +8,7 @@ export default function MatchGame({ pairs }) {
   const [selectedWord, setSelectedWord] = useState(null);
   const [matches, setMatches] = useState({});
   const [shuffledDescriptions, setShuffledDescriptions] = useState([]);
-  const [showAnswers, setShowAnswers] = useState(false);
+
   const [checked, setChecked] = useState(false);
 
   const router = useRouter();
@@ -40,12 +40,17 @@ export default function MatchGame({ pairs }) {
   const handleResetMatch = (word) => {
     const description = matches[word];
     setShuffledDescriptions([...shuffledDescriptions, description]);
-    setMatches({ ...matches, [word]: null });
+    const updatedMatches = { ...matches };
+    delete updatedMatches[word];
+    setMatches(updatedMatches);
+    // setMatches({ ...matches, [word]: null });
+    setChecked(false);
   };
   const resetGame = () => {
     setSelectedWord(null);
     setMatches({});
-    setShowAnswers(false); // Hide answers upon reset
+    setChecked(false);
+
     setShuffledDescriptions(
       shuffleArray(pairs.map((pair) => pair.description))
     );
@@ -105,6 +110,11 @@ export default function MatchGame({ pairs }) {
 
     await updateProgress(userEmail, lessonId, progress, completed, answers);
   }
+  const isMatchCorrect = (word, description) => {
+    return pairs.some(
+      (pair) => pair.word === word && pair.description === description
+    );
+  };
 
   return (
     <>
@@ -112,15 +122,30 @@ export default function MatchGame({ pairs }) {
         <div className={styles.wordsColumn}>
           {matchedWords.map((word, index) => (
             <div key={index} className={styles.wordContainer}>
-              <button className={styles.wordButton}>{word}</button>
-              <div className={styles.resetButtonContainer}>
-                <button
-                  onClick={() => handleResetMatch(word)}
-                  className={styles.resetButton}
-                >
-                  ×
-                </button>
-              </div>
+              <button
+                className={`${styles.wordButton} ${
+                  checked && isMatchCorrect(word, matches[word])
+                    ? styles.correct
+                    : ""
+                } ${
+                  checked && !isMatchCorrect(word, matches[word])
+                    ? styles.incorrect
+                    : ""
+                }`}
+              >
+                {word}
+              </button>
+
+              {matches[word] && (
+                <div className={styles.resetButtonContainer}>
+                  <button
+                    onClick={() => handleResetMatch(word)}
+                    className={styles.resetButton}
+                  >
+                    ×
+                  </button>
+                </div>
+              )}
             </div>
           ))}
           {unmatchedWords.map((word, index) => (
@@ -172,12 +197,12 @@ export default function MatchGame({ pairs }) {
           Check Matches
         </button>
         {/* <button
-          onClick={() => setShowAnswers(true)}
-          className={styles.showAnswersButton}
-        >
-          Show Answers
-        </button> */}
-        <button onClick={resetGame} className={styles.resetButton}>
+            onClick={() => setShowAnswers(true)}
+            className={styles.showAnswersButton}
+          >
+            Show Answers
+          </button> */}
+        <button onClick={resetGame} className={styles.checkButton}>
           Reset Game
         </button>
       </div>

@@ -1,0 +1,52 @@
+.container {
+    padding: 20px;
+}
+
+.statement,
+.options {
+    margin-bottom: 20px;
+}
+
+.imgContainer {
+    display: inline-block;
+    margin-right: 20px;
+}
+
+.picture {
+    width: 100px;
+    height: 100px;
+    border: 2px solid #ddd;
+    /* Серый контур вокруг изображения */
+    border-radius: 5px;
+}
+
+.select {
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.button {
+    padding: 10px 15px;
+    margin: 5px;
+    background-color: #007bff;
+    /* Синий фон */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: #0056b3;
+    /* Темно-синий фон при наведении */
+}
+
+.correct {
+    background-color: #d4edda;
+    /* Зеленый фон для правильного ответа */
+}
+
+.incorrect {
+    background-color: #f8d7da;
+    /* Красный фон для неправильного ответа */
+}

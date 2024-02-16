@@ -1,8 +1,10 @@
-/* TrueOrFalse.module.css */
-
 .container {
-    margin: 20px auto;
-    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* margin: 20px auto;
+    padding: 20px; */
     background-color: #f9f9f9;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -14,24 +16,49 @@
 }
 
 .buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin: 10px 0;
 }
 
 .button {
     margin-right: 10px;
     padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.correct {
+    background-color: #28a745;
+    /* Зеленый для правильного ответа */
+    color: white;
+}
+
+.incorrect {
+    background-color: #dc3545;
+    /* Красный для неправильного ответа */
+    color: white;
+}
+
+.submitButton {
     background-color: #007bff;
     color: white;
-    border: none;
+    padding: 10px 15px;
     border-radius: 5px;
     cursor: pointer;
 }
 
-.button:hover {
+.submitButton:hover {
     background-color: #0056b3;
 }
-
-.feedback {
-    margin-top: 20px;
-    font-weight: bold;
+.selected{
+    
+    background-color: grey;
+}
+.buttonscontainer{
+    display: flex;
+    gap: 3rem;
 }

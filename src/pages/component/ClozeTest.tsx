@@ -108,7 +108,7 @@ const ClozeTest = ({ clozeTest }) => {
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.heading}>Options:</h2>
+      {/* <h2 className={styles.heading}>Options:</h2> */}
       <div className={styles.availableanswers}>
         {availableAnswers.map((answer, index) => (
           <div key={index} className="answer">

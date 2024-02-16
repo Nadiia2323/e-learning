@@ -7,7 +7,7 @@ import { UserContext } from "@/hooks/UserContext";
 
 const TestYourself = ({ test }) => {
   const [answers, setAnswers] = useState({});
-  const [answersData, setAnswersData] = useState({});
+  const [newProgress, setNewProgress] = useState(0);
   const [result, setResult] = useState(null);
   const [resetKey, setResetKey] = useState(0);
   const [showModal, setShowModal] = useState(false);
@@ -21,6 +21,7 @@ const TestYourself = ({ test }) => {
   const handleReset = () => {
     setAnswers({});
     setResult(null);
+    setNewProgress(0);
     setResetKey((prevKey) => prevKey + 1);
   };
 
@@ -41,6 +42,9 @@ const TestYourself = ({ test }) => {
     setShowModal(true);
 
     const progress = (correctAnswers.length / test.test.length) * 100;
+    console.log("progress :>> ", progress);
+    setNewProgress(progress);
+    console.log("newProgress :>> ", newProgress);
     const completed = progress === 100;
 
     const answerDetails = Object.entries(answers).map(
@@ -63,145 +67,50 @@ const TestYourself = ({ test }) => {
       answerDetails
     );
   };
-  // useEffect(() => {
-  //   console.log("Loaded answers from context:", user.data.answers);
-  //   if (user.data && user.data.answers) {
-  //     const lessonAnswers = user.data.answers.filter(
-  //       (answer) => answer.lessonId === lessonId
-  //     );
-  //     const formattedAnswers = {};
-
-  //     for (let answer of lessonAnswers) {
-  //       formattedAnswers[answer.taskId] = {
-  //         optionId: answer.userAnswer,
-  //         isCorrect: answer.isCorrect,
-  //       };
-  //     }
-
-  //     setAnswersData(formattedAnswers);
-  //   }
-  // }, [user.data, lessonId]);
-  // console.log(
-  //   "answer[65cde73b2db69c2c2a84b9d6].optionId :>> ",
-  //   answers["65cde73b2db69c2c2a84b9d6"].optionId
-  // );
-
-  // console.log("answers :>> ", answers);
-  // console.log("user :>> ", user);
-  // console.log("test :>> ", test);
 
   return (
     <div className={styles.testContainer}>
       <h2>{test.name}</h2>
-      {/* {test.test.map((question) => (
+
+      {test.test.map((question) => (
         <div key={question._id}>
-          <p className={styles.question}>{question.questionText}</p> */}
+          <p className={styles.question}>{question.questionText}</p>
+          {question.options.map((option) => {
+            const isAnswerChecked = showModal;
+            const isCorrectAnswer = answers[question._id]?.isCorrect;
+            const isSelectedOption =
+              answers[question._id]?.optionId === option._id;
+            let optionClass = styles.option;
 
-      {/* {question.options.map((option) => {
-            // Вставка console.log для вывода значений
-            // console.log(
-            //   "Checking:",
-            //   question._id,
-            //   "Option ID:",
-            //   answers[question._id]?.optionId,
-            //   "Option Text:",
-            //   option.optionText
-            // );
-            console.log("%c answers :>>", "color:red", answers);
-            console.log("%c option :>>", "color:orange", option);
-            const option2 = () => {
-              for (const key in answersData) {
-                // if (Object.prototype.hasOwnProperty.call(object, key)) {
-                //   const element = object[key];
-                // }
-                console.log(" answers[key] :>> ", answersData[key]);
-                answersData[key].optionId === option.optionText;
+            if (isAnswerChecked && isSelectedOption) {
+              optionClass += isCorrectAnswer
+                ? ` ${styles.correctAnswer}`
+                : ` ${styles.incorrectAnswer}`;
+            }
 
-                return answersData[key];
-              }
-            };
-            const option3 = option2();
-            console.log("option3 :>> ", option3);
-            console.log("%c question :>> ", "color:green", question);
-            console.log(
-              "%c answers[question._id] :>> ",
-              "color:green",
-              answers
-            );
             return (
-              <div key={option3?._id} className={styles.option}>
+              <div key={option._id} className={optionClass}>
                 <input
                   type="radio"
                   name={question._id}
                   value={option.optionText}
-                  // checked={
-                  //   answers[question._id]?.optionId === option3?.optionText
-                  // }
+                  checked={isSelectedOption}
                   onChange={(e) =>
                     handleOptionChange(
                       question._id,
-                      option?.optionText,
-                      option?.isCorrect
+                      option._id,
+                      option.isCorrect,
+                      option.optionText
                     )
                   }
                 />
-                {option?.optionText}
+                {option.optionText}
               </div>
             );
           })}
         </div>
       ))}
-      {/* {test.test.map((question) => (
-        <div key={question._id}>
-          <p className={styles.question}>{question.questionText}</p>
-          {question.options.map((option) => (
-            <div key={option._id} className={styles.option}>
-              <input
-                type="radio"
-                name={question._id}
-                value={option.optionText}
-                checked={
-                  answers[question._id] &&
-                  answers[question._id].optionId === option.optionText
-                }
-                onChange={(e) =>
-                  handleOptionChange(
-                    question._id,
-                    option.optionText,
-                    option.isCorrect
-                  )
-                }
-              />
-              {option.optionText}
-            </div>
-          ))}
-        </div>
-              ))} */}
 
-      {test.test.map((question) => (
-        <div key={question._id}>
-          <p className={styles.question}>{question.questionText}</p>
-          {question.options.map((option) => (
-            <div key={option._id} className={styles.option}>
-              <input
-                type="radio"
-                name={question._id}
-                value={option.optionText}
-                checked={answers[question._id]?.optionId === option._id}
-                onChange={(e) =>
-                  handleOptionChange(
-                    question._id,
-                    option._id,
-                    option.isCorrect,
-                    option.optionText
-                  )
-                }
-              />
-              {option.optionText}
-            </div>
-          ))}
-        </div>
-      ))}
       <button className={styles.submitButton} onClick={handleSubmit}>
         Submit
       </button>
@@ -209,7 +118,11 @@ const TestYourself = ({ test }) => {
         Reset
       </button>
       {showModal && (
-        <ModalTest result={result} onClose={() => setShowModal(false)} />
+        <ModalTest
+          result={result}
+          score={newProgress}
+          onClose={() => setShowModal(false)}
+        />
       )}
     </div>
   );

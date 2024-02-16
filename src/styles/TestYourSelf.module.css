@@ -38,4 +38,20 @@
 .resetButton {
     background-color: #6c757d;
 }
+.correctAnswer {
+    background-color: #d4edda;
+    /* Зеленый фон */
+    color: #155724;
+    /* Зеленый текст */
+    border-left: 5px solid #28a745;
+    /* Зеленая линия слева */
+}
 
+.incorrectAnswer {
+    background-color: #f8d7da;
+    /* Красный фон */
+    color: #721c24;
+    /* Красный текст */
+    border-left: 5px solid #dc3545;
+    /* Красная линия слева */
+}

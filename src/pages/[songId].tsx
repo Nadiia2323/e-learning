@@ -136,7 +136,10 @@ export default function Details({ song }) {
             <div key={index}>
               {task.test && task.name === "cloze-test" && (
                 <>
-                  <h3>{task.test.name}</h3>
+                  <div className={styles.taskDescription}>
+                    <h3 className={styles.task}>{task.test.name}</h3>
+                  </div>
+
                   <ClozeTest clozeTest={task.test.content} />
                 </>
               )}
@@ -154,11 +157,13 @@ export default function Details({ song }) {
           style={{ cursor: "pointer" }}
           className={styles.toggleButton}
         >
-          Speaking Questions
+          Speaking
         </h2>
         {showSpeakingTasks && song.tasks && (
           <div>
-            <h3>Task: {song.tasks.wordPairs.name}</h3>
+            <div className={styles.taskDescription}>
+              <h3 className={styles.task}> {song.tasks.wordPairs.name}</h3>
+            </div>
             <MatchGame pairs={song.tasks.wordPairs.pairs} />
           </div>
         )}
@@ -172,6 +177,7 @@ export default function Details({ song }) {
           >
             GrammaPart
           </h2>
+          <br />
           {showGrammaTasks && (
             <iframe
               src="https://docs.google.com/presentation/d/e/2PACX-1vQIVw7pIP8sVjc_zI89BcbkjPXczY_PqHSsxTrCIxeyQViaFbY3KbKO7ivjkFusY3A8FAQgaHLWXpza/embed?start=false&loop=false&delayms=3000"
@@ -192,12 +198,17 @@ export default function Details({ song }) {
             song.listeningtasks.map((task, index) =>
               task.trueorfalse ? (
                 <div key={index}>
-                  <h3>{task.name}</h3>
+                  <div className={styles.taskDescription}>
+                    <h3 className={styles.task}>{task.name}</h3>
+                  </div>
                   <TrueOrFalse test={task.trueorfalse.task} />
                 </div>
               ) : task.picturematch ? (
                 <div key={index}>
-                  <h3>{task.name}</h3>
+                  <br />
+                  <div className={styles.taskDescription}>
+                    <h3 className={styles.task}>{task.name}</h3>
+                  </div>
 
                   <PictureMatchGame pairs={task.picturematch.pairs} />
                 </div>

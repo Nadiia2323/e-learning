@@ -1,16 +1,17 @@
+import React, { useState, useEffect } from "react";
+import styles from "@/styles/PictureMatch.module.css";
 import { shuffleArray } from "@/utils/shuffleArray";
 import { updateProgress } from "@/utils/updateProgress";
 import { useRouter } from "next/router";
-import React, { useState, useEffect } from "react";
 
 const PictureMatchGame = ({ pairs }) => {
   const [options, setOptions] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState({});
-  const [matches, setMatches] = useState({});
+  const [checked, setChecked] = useState(false);
+
   const router = useRouter();
   const { songId } = router.query;
   const lessonId = songId;
-  console.log("lessonId :>> ", lessonId);
   const userEmail = "test2@test.com";
 
   useEffect(() => {
@@ -18,41 +19,36 @@ const PictureMatchGame = ({ pairs }) => {
       pairs.map((pair) => pair.description)
     );
     setOptions(shuffledDescriptions);
-    setSelectedOptions({});
   }, [pairs]);
 
-  const handleSelectMatch = (pictureId, description) => {
-    setSelectedOptions((prev) => ({
-      ...prev,
-      [pictureId]: description,
-    }));
+  const handleSelectOption = (pictureId, description) => {
+    if (!checked) {
+      setSelectedOptions((prev) => ({
+        ...prev,
+        [pictureId]: description,
+      }));
+    }
   };
 
   const resetGame = () => {
     setSelectedOptions({});
+    setChecked(false);
     setOptions(shuffleArray(pairs.map((pair) => pair.description)));
   };
 
-  const renderOptionsAbove = () => {
-    return options.map((option, index) => {
-      if (!Object.values(selectedOptions).includes(option)) {
-        return <div key={index}>{option}</div>;
-      }
-      return null;
-    });
-  };
   const handleSubmit = async () => {
     let correctCount = 0;
     const answers = pairs.map((pair) => {
-      const isCorrect = matches[pair._id] === pair.description;
-      if (isCorrect) correctCount++;
+      const isCorrect = selectedOptions[pair._id] === pair.description;
+      if (isCorrect) {
+        correctCount++;
+      }
+
       return {
         taskId: pair._id,
         answerType: "pictureMatch",
-        answerDetails: {
-          userAnswer: matches[pair._id],
-          isCorrect,
-        },
+        userAnswer: selectedOptions[pair._id] || "",
+        isCorrect: isCorrect,
       };
     });
 
@@ -61,42 +57,43 @@ const PictureMatchGame = ({ pairs }) => {
 
     await updateProgress(userEmail, lessonId, progress, completed, answers);
 
-    alert(
-      correctCount === pairs.length
-        ? "All matches are correct!"
-        : "Some matches are incorrect."
-    );
+    setChecked(true);
+
+    alert(`You have ${correctCount} correct matches out of ${pairs.length}.`);
   };
 
   return (
-    <div>
-      <h2>Match the Picture with the Correct Statement</h2>
-      <div>{renderOptionsAbove()}</div>
+    <div className={styles.container}>
+      <h2>Match Pictures to Descriptions</h2>
       {pairs.map((pair) => (
-        <div key={pair._id} style={{ marginBottom: "20px" }}>
-          <img
-            src={pair.picture}
-            alt=""
-            style={{ width: "100px", height: "100px" }}
-          />
+        <div key={pair._id} className={styles.pairContainer}>
+          <img src={pair.picture} alt="Match" className={styles.picture} />
           <select
-            onChange={(e) => handleSelectMatch(pair._id, e.target.value)}
+            className={`${styles.select} ${
+              checked
+                ? selectedOptions[pair._id] === pair.description
+                  ? styles.correct
+                  : styles.incorrect
+                : ""
+            }`}
             value={selectedOptions[pair._id] || ""}
+            onChange={(e) => handleSelectOption(pair._id, e.target.value)}
           >
-            <option value="">Select a statement</option>
-            {options.map((option, index) => {
-              return !Object.values(selectedOptions).includes(option) ||
-                selectedOptions[pair._id] === option ? (
-                <option key={index} value={option}>
-                  {option}
-                </option>
-              ) : null;
-            })}
+            <option value="">Select Description</option>
+            {options.map((option, index) => (
+              <option key={index} value={option}>
+                {option}
+              </option>
+            ))}
           </select>
         </div>
       ))}
-      <button onClick={handleSubmit}>Submit Matches</button>
-      <button onClick={resetGame}>Reset Answers</button>
+      <button onClick={handleSubmit} className={styles.button}>
+        Check Answers
+      </button>
+      <button onClick={resetGame} className={styles.button}>
+        Reset Game
+      </button>
     </div>
   );
 };
