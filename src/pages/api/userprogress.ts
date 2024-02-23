@@ -26,21 +26,39 @@ export default async function updateProgress(req, res) {
     let updatedAnswerIds = [];
 
 
-  for (let answerDetail of answers) {
-  const { taskId, answerType, answerDetails } = answerDetail; 
-  console.log('userAnswer :>> ', answerDetail);
+//   for (let answerDetail of answers) {
+//   const { taskId, answerType, answerDetails } = answerDetail;
+//   console.log('userAnswer :>> ', answerDetail);
 
-  const { userAnswer, isCorrect } = answerDetails || {}; //after this or it doesnt want to save text
+//   const { userAnswer, isCorrect } = answerDetails || {};
+
+//   const filter = { taskId, userId: user._id, lessonId };
+//   const update = { answerType, userAnswer, isCorrect };
+//   console.log('update :>> ', update);
+
+//   const options = { new: true, upsert: true };
+
+//   const detail = await AnswerDetailModel.findOneAndUpdate(filter, update, options);
+//   updatedAnswerIds.push(detail._id); .//!WORKED ONLY FOR TEST YOURSELF
+    // }
+    for (let answerDetail of answers) {
+      const { taskId, answerType, userAnswer, isCorrect } = answerDetail;  
+      
 
   const filter = { taskId, userId: user._id, lessonId };
-  const update = { answerType, userAnswer, isCorrect };
+      // const update = { answerType, userAnswer, isCorrect };
+      const update = { $set: { answerType, userAnswer, isCorrect } };
+
   console.log('update :>> ', update);
 
-  const options = { new: true, upsert: true };
+      const options = { new: true, upsert: true };
+      console.log('options :>> ', options);
 
-  const detail = await AnswerDetailModel.findOneAndUpdate(filter, update, options);
+      const detail = await AnswerDetailModel.findOneAndUpdate(filter, update, options);
+      console.log('detail :>> ', detail);
   updatedAnswerIds.push(detail._id);
 }
+
 
     
     user.answers = [...new Set([...user.answers, ...updatedAnswerIds.map(id => id.toString())])];

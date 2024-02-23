@@ -178,13 +178,15 @@ export default function Details({ song }) {
             GrammaPart
           </h2>
           <br />
-          {showGrammaTasks && (
-            <iframe
-              src="https://docs.google.com/presentation/d/e/2PACX-1vQIVw7pIP8sVjc_zI89BcbkjPXczY_PqHSsxTrCIxeyQViaFbY3KbKO7ivjkFusY3A8FAQgaHLWXpza/embed?start=false&loop=false&delayms=3000"
-              width="560"
-              height="315"
-            ></iframe>
-          )}
+          <div className={styles.slides}>
+            {showGrammaTasks && (
+              <iframe
+                src="https://docs.google.com/presentation/d/e/2PACX-1vQIVw7pIP8sVjc_zI89BcbkjPXczY_PqHSsxTrCIxeyQViaFbY3KbKO7ivjkFusY3A8FAQgaHLWXpza/embed?start=false&loop=false&delayms=3000"
+                width="560"
+                height="315"
+              ></iframe>
+            )}
+          </div>
         </div>
         <div className={styles.section}>
           <h2

@@ -26,21 +26,24 @@
     max-width: 1200px;
     margin: 2% auto;
     padding: 20px;
-    background-color: #f8f9fa;
+    background-color: #dcdfdf;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
-
+.slides{
+    display: flex;
+    justify-content: center;
+}
 
 .heading {
-    color: #007bff;
+    color: #26568a;
     text-align: center;
     margin-bottom: 20px;
 }
 
 
 .toggleButton {
-    background-color: #007bff;
+    background-color: #26568a;
     color: white;
     padding: 10px 20px;
     border: none;

@@ -152,9 +152,9 @@ export default function Login() {
               </label>
               <p className={styles.forgotPassword}>Forgot Password?</p>
               {/* <button type="submit">Sign in</button> */}
-              <button onClick={handleSignIn}>Sign innn</button>
+              <button onClick={handleSignIn}>Sign in</button>
               <p>or</p>
-              {/* <button
+              <button
                 className={styles.googleBtn}
                 onClick={() => signIn("google")}
               >
@@ -163,7 +163,7 @@ export default function Login() {
                   className={styles.googleIcon}
                 />
                 Sign in with Google
-              </button> */}
+              </button>
               {/* </form> */}
             </>
           )}

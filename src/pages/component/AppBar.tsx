@@ -11,9 +11,9 @@ export default function AppBar() {
 
   return (
     <header style={{ background: "black" }}>
-      <h4 style={{ color: "white" }}>
+      {/* <h4 style={{ color: "white" }}>
         Rhythms of Learning: Where Music Meets English Mastery!
-      </h4>
+      </h4> */}
       <SignInButton />
     </header>
   );

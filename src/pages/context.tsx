@@ -43,20 +43,42 @@ export default function Context({ data }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      {/* <div
+        style={{
+          backgroundImage:
+            "url('https://res.cloudinary.com/dqgvmwnpl/image/upload/v1708077101/audio-7276511_1280_t63a2m.jpg')",
+          backgroundSize: "cover",
+          minHeight: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          // zIndex: "-1",
+          position: "relative",
+        }}
+      >
+        {/* <h1>Welcome to My Next.js App!</h1> */}
+      {/* </div> */}
 
-      <ul className={styles.songList}>
-        {data &&
-          data.map((song, index) => (
-            <li
-              key={song._id}
-              className={styles.songItem}
-              onClick={() => handlerSelect(song._id)}
-            >
-              <span className={styles.songTitle}>{song.lyric}</span> by{" "}
-              <span className={styles.authorName}>{song.author}</span>
-            </li>
-          ))}
-      </ul>
+      <div className={styles.songListContainer}>
+        <h1 className={styles.title}>SONGS THAT TOUCH YOUR SOUL </h1>
+        <ul className={styles.songList}>
+          {data &&
+            data.map((song, index) => (
+              <li
+                key={song._id}
+                className={styles.songItem}
+                onClick={() => handlerSelect(song._id)}
+              >
+                <span className={styles.songTitle}>{song.lyric}</span> by{" "}
+                <span className={styles.authorName}>{song.author}</span>
+              </li>
+            ))}
+        </ul>
+        <img
+          src="https://res.cloudinary.com/dqgvmwnpl/image/upload/v1708077101/audio-7276511_1280_t63a2m.jpg"
+          alt=""
+        />
+      </div>
     </>
   );
 }

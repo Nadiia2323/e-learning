@@ -64,6 +64,8 @@ const ClozeTest = ({ clozeTest }) => {
 
     clozeTest.forEach((item, index) => {
       const userAnswer = userAnswers[index].toLowerCase();
+      console.log("userAnswer :>> ", userAnswer);
+      console.log("item._id :>> ", item._id);
 
       const isCorrect = item.blank && item.answer.toLowerCase() === userAnswer;
 
@@ -108,7 +110,6 @@ const ClozeTest = ({ clozeTest }) => {
 
   return (
     <div className={styles.container}>
-      {/* <h2 className={styles.heading}>Options:</h2> */}
       <div className={styles.availableanswers}>
         {availableAnswers.map((answer, index) => (
           <div key={index} className="answer">

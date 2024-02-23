@@ -85,7 +85,7 @@ margin-top: 20px;
     
     color: white;
        
-        font-size: 24px;
+        font-size: 18px;
        
         text-align: center;
       
@@ -100,7 +100,7 @@ margin-top: 20px;
 }
 
 .quatetext {
-    font-size: 24px;
+    font-size: 20px;
   margin-bottom: 40px;
   margin-top: 10%;
   color: white;
@@ -125,6 +125,9 @@ margin-bottom: 0;
   height: 40px;
 }
 .textContainer {
+  /* background-color: rgba(249, 242, 242, 0.247);
+  margin: 10px;
+  border-radius: 25px; */
  
   display: flex;
   flex-direction: column;

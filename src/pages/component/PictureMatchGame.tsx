@@ -64,7 +64,7 @@ const PictureMatchGame = ({ pairs }) => {
 
   return (
     <div className={styles.container}>
-      <h2>Match Pictures to Descriptions</h2>
+      {/* <h2>Match Pictures to Descriptions</h2> */}
       {pairs.map((pair) => (
         <div key={pair._id} className={styles.pairContainer}>
           <img src={pair.picture} alt="Match" className={styles.picture} />
