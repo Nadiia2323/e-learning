@@ -55,7 +55,6 @@ const answerDetailsSchema = new mongoose.Schema({
   },
   taskId: {
     type: mongoose.Schema.Types.ObjectId,
-
     required: true,
   },
   userId: {
@@ -67,12 +66,18 @@ const answerDetailsSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  userAnswer: mongoose.Schema.Types.Mixed,
+  userAnswer: mongoose.Schema.Types.Mixed, 
   isCorrect: {
     type: Boolean,
     required: true,
   },
+  
+  answerId: {
+    type: String,
+    required: false, 
+  },
 });
+
 const userSchema = new mongoose.Schema({
   name: {
     type: String,

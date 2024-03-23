@@ -54,7 +54,8 @@ export async function getServerSideProps({ params }) {
       model: "testyourself",
     });
 
-  // console.log("song server :>> ", song);
+  // console.log("song server :>> ", JSON.stringify(song, null, 2));
+  //!changing the id for the content inside clozetest after refreshing the page
 
   return {
     props: { song: song ? JSON.parse(JSON.stringify(song)) : {} },
@@ -140,7 +141,7 @@ export default function Details({ song }) {
                     <h3 className={styles.task}>{task.test.name}</h3>
                   </div>
 
-                  <ClozeTest clozeTest={task.test.content} />
+                  <ClozeTest clozeTest={task.test} />
                 </>
               )}
 
