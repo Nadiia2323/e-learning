@@ -185,6 +185,7 @@ const testyourselfSchema = new mongoose.Schema({
   ],
 });
 const readingtasksSchema = new mongoose.Schema({
+ 
   name: {
     type: String,
   },
@@ -207,6 +208,7 @@ const clozetestSchema = new mongoose.Schema({
     {
       text: String,
       blank: Boolean,
+       _id:false,
     },
   ],
 });

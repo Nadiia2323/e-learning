@@ -163,7 +163,7 @@ export default async function updateProgress(req, res) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Инициализация пустого массива для хранения обновлённых ID ответов
+    
     let updatedAnswerIds = new Set(user.answers.map(id => id.toString()));
 
     for (let answerDetail of answers) {
@@ -177,11 +177,11 @@ export default async function updateProgress(req, res) {
       const detail = await AnswerDetailModel.findOneAndUpdate(filter, update, options);
       console.log('detail :>> ', detail);
 
-      // Добавляем ID в Set для обеспечения уникальности
+      
       updatedAnswerIds.add(detail._id.toString());
     }
 
-    // Преобразование Set обратно в массив для сохранения в документ пользователя
+   
     user.answers = Array.from(updatedAnswerIds);
 
     const lessonProgressIndex = user.lessonsProgress.findIndex(lp => lp.lessonId.toString() === lessonId);

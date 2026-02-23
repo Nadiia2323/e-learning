@@ -29,6 +29,7 @@ export async function getServerSideProps({ params }) {
         {
           path: "test",
           model: "clozetest",
+          // select: ["test", "_id"],
         },
         {
           path: "testOp",
@@ -131,6 +132,7 @@ export default function Details({ song }) {
         >
           Lyric
         </h2>
+        {console.log("readingTasks", song.readingtasks)}
         {showReadingTasks &&
           song.readingtasks &&
           song.readingtasks.map((task, index) => (

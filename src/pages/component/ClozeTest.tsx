@@ -286,7 +286,7 @@ const ClozeTest = ({ clozeTest }) => {
                 value={userAnswers[index] || ""}
                 onChange={(event) => handleSelectChange(index, event)}
               >
-                <option value="">Выберите ответ</option>
+                <option value="">select </option>
                 {[...availableAnswers, prevAnswers[index]]
                   .filter(Boolean)
                   .sort()
