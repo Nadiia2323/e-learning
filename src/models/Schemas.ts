@@ -66,15 +66,15 @@ const answerDetailsSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  userAnswer: mongoose.Schema.Types.Mixed, 
+  userAnswer: mongoose.Schema.Types.Mixed,
   isCorrect: {
     type: Boolean,
     required: true,
   },
-  
+
   answerId: {
     type: String,
-    required: false, 
+    required: false,
   },
 });
 
@@ -105,7 +105,6 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
       },
-      
     },
   ],
   createdAt: {
@@ -117,12 +116,11 @@ const userSchema = new mongoose.Schema({
     default: Date.now,
   },
   answers: [
-        {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "detail",
-        },
-      ],
- 
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "detail",
+    },
+  ],
 });
 
 // const UserAnswerSchema = new mongoose.Schema({
@@ -138,35 +136,6 @@ const userSchema = new mongoose.Schema({
 //   answers: [UserAnswerSchema], // Массив ответов на задания
 // });
 
-const LyricSchema = new mongoose.Schema({
-  lyric: String,
-  author: String,
-  video: String,
-  // listening: {
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: "Listening",
-  // },
-  tasks: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "task",
-  },
-  readingtasks: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "readingtask",
-    },
-  ],
-  listeningtasks: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "listeningtask",
-    },
-  ],
-  testyourself: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "testyourself",
-  },
-});
 const testyourselfSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -185,7 +154,6 @@ const testyourselfSchema = new mongoose.Schema({
   ],
 });
 const readingtasksSchema = new mongoose.Schema({
- 
   name: {
     type: String,
   },
@@ -208,7 +176,7 @@ const clozetestSchema = new mongoose.Schema({
     {
       text: String,
       blank: Boolean,
-       _id:false,
+      _id: false,
     },
   ],
 });
@@ -253,8 +221,7 @@ const trueorfalseSchema = new mongoose.Schema({
   ],
 });
 const AnswerDetailModel =
-  mongoose.models.detail ||
-  mongoose.model("detail", answerDetailsSchema);
+  mongoose.models.detail || mongoose.model("detail", answerDetailsSchema);
 const testyourselfModel =
   mongoose.models.testyourself ||
   mongoose.model("testyourself", testyourselfSchema);
@@ -278,8 +245,7 @@ const ReadingtaskModel =
   mongoose.model("readingtask", readingtasksSchema);
 const WordPairsModel =
   mongoose.models.wordPair || mongoose.model("wordPair", wordPairsSchema);
-const LyricModel =
-  mongoose.models.lesson || mongoose.model("lesson", LyricSchema);
+
 const UserModel = mongoose.models.user || mongoose.model("user", userSchema);
 
 const taskModel = mongoose.models.task || mongoose.model("task", taskSchema);
@@ -288,7 +254,6 @@ const taskModel = mongoose.models.task || mongoose.model("task", taskSchema);
 export {
   taskModel,
   UserModel,
-  LyricModel,
   WordPairsModel,
   ReadingtaskModel,
   ClozetestModel,

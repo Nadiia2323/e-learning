@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import dbConnect from "../utils/dbConnect";
-import { LyricModel } from "@/models/Schemas";
-
+import { LessonModel } from "@/models/Lesson";
+import { Lesson } from "@/types";
 import MatchGame from "./component/MatchGame";
 import ClozeTest from "./component/ClozeTest";
 import SentenceOptions from "./component/SentenceOptions";
@@ -15,7 +15,7 @@ export async function getServerSideProps({ params }) {
   await dbConnect();
   const { songId } = params;
 
-  const song = await LyricModel.findById(songId)
+  const song = await LessonModel.findById(songId)
     .populate({
       path: "tasks",
       strictPopulate: false,
@@ -94,7 +94,7 @@ function SectionCard({
   );
 }
 
-export default function Details({ song }) {
+export default function Details({ song }: { song: Lesson | null }) {
   const router = useRouter();
 
   const [showSpeakingTasks, setShowSpeakingTasks] = useState(false);
