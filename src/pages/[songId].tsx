@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import dbConnect from "../utils/dbConnect";
-import { LessonModel } from "@/models/Lesson";
 import { Lesson } from "@/types";
 import MatchGame from "./component/MatchGame";
 import ClozeTest from "./component/ClozeTest";
@@ -14,6 +13,9 @@ import TestYouSelf from "./component/TestYouSelf";
 export async function getServerSideProps({ params }) {
   await dbConnect();
   const { songId } = params;
+
+  await import("@/models/Schemas");
+  const { LessonModel } = await import("@/models/Lesson");
 
   const song = await LessonModel.findById(songId)
     .populate({
@@ -59,7 +61,6 @@ export async function getServerSideProps({ params }) {
     props: { song: song ? JSON.parse(JSON.stringify(song)) : null },
   };
 }
-
 function SectionCard({
   title,
   subtitle,

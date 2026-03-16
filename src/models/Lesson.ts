@@ -1,3 +1,48 @@
+// import mongoose, { Types } from "mongoose";
+
+// export interface LessonType extends mongoose.Document {
+//   lyric: string;
+//   author: string;
+//   video: string;
+
+//   tasks?: Types.ObjectId;
+//   readingTasks?: Types.ObjectId[];
+//   listeningTasks?: Types.ObjectId[];
+//   testYourself?: Types.ObjectId;
+// }
+
+// const LessonSchema = new mongoose.Schema({
+//   lyric: String,
+//   author: String,
+//   video: String,
+
+//   tasks: {
+//     type: mongoose.Schema.Types.ObjectId,
+//     ref: "task",
+//   },
+
+//   readingTasks: [
+//     {
+//       type: mongoose.Schema.Types.ObjectId,
+//       ref: "readingtask",
+//     },
+//   ],
+
+//   listeningTasks: [
+//     {
+//       type: mongoose.Schema.Types.ObjectId,
+//       ref: "listeningtask",
+//     },
+//   ],
+
+//   testYourself: {
+//     type: mongoose.Schema.Types.ObjectId,
+//     ref: "testyourself",
+//   },
+// });
+
+// export const LessonModel =
+//   mongoose.models.lesson || mongoose.model("lesson", LessonSchema);
 import mongoose, { Types } from "mongoose";
 
 export interface LessonType extends mongoose.Document {
