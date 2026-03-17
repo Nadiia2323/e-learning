@@ -8,10 +8,63 @@ export interface Lesson {
   lyric: string;
   video: string;
 
-  tasks: Id;
-  readingtasks?: Id[];
-  listeningtasks?: Id[];
-  testyourself?: Id;
+  tasks: {
+    questions?: string[];
+    funpic?: string;
+    wordPairs?: {
+      name: string;
+      pairs: {
+        word: string;
+        description: string;
+      }[];
+    };
+  };
+
+  readingtasks?: {
+    type: "cloze" | "options";
+    name?: string;
+    test?: {
+      name: string;
+      content: {
+        text: string;
+        blank: boolean;
+      }[];
+    };
+    testOp?: {
+      task: {
+        sentence: string;
+        options: string[];
+        correctAnswers: string[];
+      }[];
+    };
+  }[];
+
+  listeningtasks?: {
+    type: "truefalse" | "picture";
+    name?: string;
+    trueorfalse?: {
+      task: {
+        statement: string;
+        isTrue: boolean;
+      }[];
+    };
+    picturematch?: {
+      pairs: {
+        picture: string;
+        description: string;
+      }[];
+    };
+  }[];
+
+  testyourself?: {
+    test: {
+      questionText: string;
+      options: {
+        optionText: string;
+        isCorrect: boolean;
+      }[];
+    }[];
+  };
 }
 
 /* ================= TASK INTRO ================= */

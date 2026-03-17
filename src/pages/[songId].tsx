@@ -10,55 +10,38 @@ import TrueOrFalse from "./component/TrueOrFalse";
 import PictureMatchGame from "./component/PictureMatchGame";
 import TestYouSelf from "./component/TestYouSelf";
 
-export async function getServerSideProps({ params }) {
+export async function getServerSideProps({
+  params,
+}: {
+  params: { songId: string };
+}) {
   await dbConnect();
   const { songId } = params;
 
-  await import("@/models/Schemas");
+  await import("@/models");
   const { LessonModel } = await import("@/models/Lesson");
 
   const song = await LessonModel.findById(songId)
     .populate({
       path: "tasks",
-      strictPopulate: false,
       populate: {
         path: "wordPairs",
-        model: "wordPair",
       },
     })
     .populate({
       path: "readingtasks",
-      populate: [
-        {
-          path: "test",
-          model: "clozetest",
-        },
-        {
-          path: "testOp",
-          model: "sentenceoption",
-        },
-      ],
+      populate: ["test", "testOp"],
     })
     .populate({
       path: "listeningtasks",
-      populate: [
-        {
-          path: "trueorfalse",
-          model: "trueorfalse",
-        },
-        {
-          path: "picturematch",
-          model: "picturematchgame",
-        },
-      ],
+      populate: ["trueorfalse", "picturematch"],
     })
-    .populate({
-      path: "testyourself",
-      model: "testyourself",
-    });
+    .populate("testyourself");
 
   return {
-    props: { song: song ? JSON.parse(JSON.stringify(song)) : null },
+    props: {
+      song: song ? JSON.parse(JSON.stringify(song)) : null,
+    },
   };
 }
 function SectionCard({
@@ -129,7 +112,7 @@ export default function Details({ song }: { song: Lesson | null }) {
   return (
     <>
       <Head>
-        <title>{`${song.title || song.lyric} — SongLMS`}</title>
+        <title>{`${song.lyric} — SongLMS`}</title>
       </Head>
 
       <main className="relative min-h-screen overflow-hidden bg-zinc-950 text-white">
@@ -156,7 +139,7 @@ export default function Details({ song }: { song: Lesson | null }) {
                 </p>
 
                 <h1 className="text-4xl font-semibold sm:text-5xl">
-                  {song.title || song.lyric}
+                  {song.lyric}
                 </h1>
 
                 <p className="mt-3 text-lg text-zinc-300">
@@ -276,7 +259,7 @@ export default function Details({ song }: { song: Lesson | null }) {
                 <div className="overflow-hidden rounded-3xl border border-white/10">
                   <iframe
                     src={song.video}
-                    title={song.title || song.lyric}
+                    title={song.lyric}
                     className="h-[240px] w-full md:h-[420px]"
                     allowFullScreen
                   />

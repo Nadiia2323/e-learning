@@ -154,8 +154,11 @@ const testyourselfSchema = new mongoose.Schema({
   ],
 });
 const readingtasksSchema = new mongoose.Schema({
-  name: {
+  name: String,
+
+  type: {
     type: String,
+    enum: ["cloze", "options"],
   },
 
   test: {
@@ -167,6 +170,20 @@ const readingtasksSchema = new mongoose.Schema({
     ref: "sentenceoption",
   },
 });
+// const readingtasksSchema = new mongoose.Schema({
+//   name: {
+//     type: String,
+//   },
+
+//   test: {
+//     type: mongoose.Schema.Types.ObjectId,
+//     ref: "clozetest",
+//   },
+//   testOp: {
+//     type: mongoose.Schema.Types.ObjectId,
+//     ref: "sentenceoption",
+//   },
+// });
 const clozetestSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -193,10 +210,12 @@ const sentenceoptionsSchema = new mongoose.Schema({
     type: String,
   },
 });
-
 const listeningtasksSchema = new mongoose.Schema({
-  name: {
+  name: String,
+
+  type: {
     type: String,
+    enum: ["truefalse", "picture"],
   },
 
   trueorfalse: {
@@ -208,6 +227,20 @@ const listeningtasksSchema = new mongoose.Schema({
     ref: "picturematchgame",
   },
 });
+// const listeningtasksSchema = new mongoose.Schema({
+//   name: {
+//     type: String,
+//   },
+
+//   trueorfalse: {
+//     type: mongoose.Schema.Types.ObjectId,
+//     ref: "trueorfalse",
+//   },
+//   picturematch: {
+//     type: mongoose.Schema.Types.ObjectId,
+//     ref: "picturematchgame",
+//   },
+// });
 const trueorfalseSchema = new mongoose.Schema({
   name: {
     type: String,
