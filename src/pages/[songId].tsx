@@ -9,6 +9,7 @@ import SentenceOptions from "./component/SentenceOptions";
 import TrueOrFalse from "./component/TrueOrFalse";
 import PictureMatchGame from "./component/PictureMatchGame";
 import TestYouSelf from "./component/TestYouSelf";
+import ReadingSection from "./component/sections/ReadingSection";
 
 export async function getServerSideProps({
   params,
@@ -81,15 +82,9 @@ function SectionCard({
 export default function Details({ song }: { song: Lesson | null }) {
   const router = useRouter();
 
-  // const [showSpeakingTasks, setShowSpeakingTasks] = useState(false);
-  // const [showReadingTasks, setShowReadingTasks] = useState(false);
-  // const [showListeningTasks, setShowListeningTasks] = useState(false);
-  // const [showGrammarTasks, setShowGrammarTasks] = useState(false);
-  // const [showVideo, setShowVideo] = useState(false);
-  // const [showTestYourself, setShowTestYourself] = useState(false);
-  const [openSection, setOpenSection] = useState<string[]>([]);
+  const [openSections, setOpenSections] = useState<string[]>([]);
   const toggleSection = (section: string) => {
-    setOpenSection((prev) =>
+    setOpenSections((prev) =>
       prev.includes(section)
         ? prev.filter((s) => s !== section)
         : [...prev, section],
@@ -260,7 +255,7 @@ export default function Details({ song }: { song: Lesson | null }) {
             <SectionCard
               title="Video"
               subtitle="Watch and listen to the original song"
-              isOpen={openSection.includes("video")}
+              isOpen={openSections.includes("video")}
               onToggle={() => toggleSection("video")}
             >
               {song.video ? (
@@ -280,10 +275,11 @@ export default function Details({ song }: { song: Lesson | null }) {
             <SectionCard
               title="Reading"
               subtitle="Practice lyrics and reading tasks"
-              isOpen={openSection.includes("reading")}
+              isOpen={openSections.includes("reading")}
               onToggle={() => toggleSection("reading")}
             >
-              {song.readingtasks?.length ? (
+              <ReadingSection tasks={song.readingtasks} />
+              {/* {song.readingtasks?.length ? (
                 <div className="space-y-6">
                   {song.readingtasks.map((task, index) => (
                     <div
@@ -312,13 +308,13 @@ export default function Details({ song }: { song: Lesson | null }) {
                 </div>
               ) : (
                 <p className="text-zinc-400">No reading tasks yet.</p>
-              )}
+              )} */}
             </SectionCard>
 
             <SectionCard
               title="Speaking"
               subtitle="Match words and practice active vocabulary"
-              isOpen={openSection.includes("speaking")}
+              isOpen={openSections.includes("speaking")}
               onToggle={() => toggleSection("speaking")}
             >
               {song.tasks?.wordPairs ? (
@@ -336,7 +332,7 @@ export default function Details({ song }: { song: Lesson | null }) {
             <SectionCard
               title="Grammar"
               subtitle="Review grammar connected to the song"
-              isOpen={openSection.includes("grammar")}
+              isOpen={openSections.includes("grammar")}
               onToggle={() => toggleSection("grammar")}
             >
               <div className="overflow-hidden rounded-3xl border border-white/10">
@@ -350,7 +346,7 @@ export default function Details({ song }: { song: Lesson | null }) {
             <SectionCard
               title="Listening"
               subtitle="Train understanding with listening exercises"
-              isOpen={openSection === "listening"}
+              isOpen={openSections.includes("listening")}
               onToggle={() => toggleSection("listening")}
             >
               {song.listeningtasks?.length ? (
@@ -387,7 +383,7 @@ export default function Details({ song }: { song: Lesson | null }) {
             <SectionCard
               title="Test yourself"
               subtitle="Complete the final self-check"
-              isOpen={openSection.includes("quiz")}
+              isOpen={openSections.includes("quiz")}
               onToggle={() => toggleSection("quiz")}
             >
               {song.testyourself ? (
