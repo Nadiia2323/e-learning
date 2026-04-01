@@ -3,13 +3,11 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import dbConnect from "../utils/dbConnect";
 import { Lesson } from "@/types";
-import MatchGame from "./component/MatchGame";
-import ClozeTest from "./component/ClozeTest";
-import SentenceOptions from "./component/SentenceOptions";
-import TrueOrFalse from "./component/TrueOrFalse";
-import PictureMatchGame from "./component/PictureMatchGame";
-import TestYouSelf from "./component/TestYouSelf";
 import ReadingSection from "./component/sections/ReadingSection";
+import SpeakingSection from "./component/sections/SpeakingSection";
+import ListeningSection from "./component/sections/ListeningSection";
+import QuizSection from "./component/sections/QuizSection";
+import IntroSection from "./component/sections/IntroSection";
 
 export async function getServerSideProps({
   params,
@@ -99,18 +97,18 @@ export default function Details({ song }: { song: Lesson | null }) {
     );
   }
 
-  const readingCount = song.readingtasks?.length || 0;
-  const listeningCount = song.listeningtasks?.length || 0;
-  const hasSpeaking = !!song.tasks?.wordPairs;
-  const hasQuiz = !!song.testyourself;
+  // const readingCount = song.readingtasks?.length || 0;
+  // const listeningCount = song.listeningtasks?.length || 0;
+  // const hasSpeaking = !!song.tasks?.wordPairs;
+  // const hasQuiz = !!song.testyourself;
 
-  const totalSections =
-    (song.video ? 1 : 0) +
-    (readingCount ? 1 : 0) +
-    (hasSpeaking ? 1 : 0) +
-    1 +
-    (listeningCount ? 1 : 0) +
-    (hasQuiz ? 1 : 0);
+  // const totalSections =
+  //   (song.video ? 1 : 0) +
+  //   (readingCount ? 1 : 0) +
+  //   (hasSpeaking ? 1 : 0) +
+  //   1 +
+  //   (listeningCount ? 1 : 0) +
+  //   (hasQuiz ? 1 : 0);
 
   return (
     <>
@@ -155,7 +153,7 @@ export default function Details({ song }: { song: Lesson | null }) {
                 </p>
               </div>
 
-              <div className="grid grid-cols-2 gap-4 lg:min-w-[280px]">
+              {/* <div className="grid grid-cols-2 gap-4 lg:min-w-[280px]">
                 <div className="rounded-3xl border border-white/10 bg-black/20 p-4">
                   <p className="text-xs text-zinc-500">Sections</p>
                   <p className="mt-2 text-2xl font-semibold">{totalSections}</p>
@@ -179,76 +177,11 @@ export default function Details({ song }: { song: Lesson | null }) {
                     {hasQuiz ? "Yes" : "No"}
                   </p>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
 
-          {/* INTRO BLOCKS */}
-          <div className="mb-8 grid gap-6 lg:grid-cols-[1.4fr_0.9fr]">
-            <div className="rounded-[32px] border border-white/10 bg-white/5 p-6 shadow-xl backdrop-blur-xl">
-              <p className="text-xs uppercase tracking-[0.25em] text-zinc-500">
-                Before you start
-              </p>
-
-              <h2 className="mt-3 text-2xl font-semibold text-white">
-                Warm-up questions
-              </h2>
-
-              <p className="mt-3 max-w-2xl text-sm leading-6 text-zinc-400">
-                Take a moment to think about these questions before starting the
-                lesson. You can answer them silently, discuss them with someone,
-                or simply use them to get into the topic of the song.
-              </p>
-
-              {song.tasks?.questions?.length ? (
-                <div className="mt-6 space-y-3">
-                  {song.tasks.questions.map((question, qIndex) => (
-                    <div
-                      key={qIndex}
-                      className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm leading-6 text-zinc-300"
-                    >
-                      <span className="mr-2 font-semibold text-white">
-                        {qIndex + 1}.
-                      </span>
-                      {question}
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="mt-6 text-sm text-zinc-500">
-                  No warm-up questions for this lesson yet.
-                </p>
-              )}
-            </div>
-
-            <div className="rounded-[32px] border border-white/10 bg-white/5 p-6 shadow-xl backdrop-blur-xl">
-              <p className="text-xs uppercase tracking-[0.25em] text-zinc-500">
-                Fun moment
-              </p>
-
-              <h2 className="mt-3 text-2xl font-semibold text-white">
-                Lesson mood
-              </h2>
-
-              <p className="mt-3 text-sm leading-6 text-zinc-400">
-                A small meme to set the mood before you begin.
-              </p>
-
-              {song.tasks?.funpic ? (
-                <div className="mt-6 overflow-hidden rounded-3xl border border-white/10 bg-black/20">
-                  <img
-                    src={song.tasks.funpic}
-                    alt="Lesson meme"
-                    className="h-full max-h-[340px] w-full object-cover"
-                  />
-                </div>
-              ) : (
-                <div className="mt-6 rounded-3xl border border-dashed border-white/10 bg-black/20 p-8 text-sm text-zinc-500">
-                  No image for this lesson yet.
-                </div>
-              )}
-            </div>
-          </div>
+          <IntroSection tasks={song.tasks} />
 
           {/* SECTIONS */}
           <div className="grid gap-6">
@@ -279,36 +212,6 @@ export default function Details({ song }: { song: Lesson | null }) {
               onToggle={() => toggleSection("reading")}
             >
               <ReadingSection tasks={song.readingtasks} />
-              {/* {song.readingtasks?.length ? (
-                <div className="space-y-6">
-                  {song.readingtasks.map((task, index) => (
-                    <div
-                      key={index}
-                      className="rounded-3xl border border-white/10 bg-black/20 p-5"
-                    >
-                      {task.test && task.name === "cloze-test" && (
-                        <>
-                          <h3 className="mb-4 text-lg font-semibold text-white">
-                            {task.test.name}
-                          </h3>
-                          <ClozeTest clozeTest={task.test} />
-                        </>
-                      )}
-
-                      {task.testOp && task.name === "sentence with options" && (
-                        <>
-                          <h3 className="mb-4 text-lg font-semibold text-white">
-                            {task.name}
-                          </h3>
-                          <SentenceOptions data={task.testOp.task} />
-                        </>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-zinc-400">No reading tasks yet.</p>
-              )} */}
             </SectionCard>
 
             <SectionCard
@@ -317,16 +220,7 @@ export default function Details({ song }: { song: Lesson | null }) {
               isOpen={openSections.includes("speaking")}
               onToggle={() => toggleSection("speaking")}
             >
-              {song.tasks?.wordPairs ? (
-                <div className="rounded-3xl border border-white/10 bg-black/20 p-5">
-                  <h3 className="mb-4 text-lg font-semibold text-white">
-                    {song.tasks.wordPairs.name}
-                  </h3>
-                  <MatchGame pairs={song.tasks.wordPairs.pairs} />
-                </div>
-              ) : (
-                <p className="text-zinc-400">No speaking tasks yet.</p>
-              )}
+              <SpeakingSection tasks={song.tasks} />
             </SectionCard>
 
             <SectionCard
@@ -349,35 +243,7 @@ export default function Details({ song }: { song: Lesson | null }) {
               isOpen={openSections.includes("listening")}
               onToggle={() => toggleSection("listening")}
             >
-              {song.listeningtasks?.length ? (
-                <div className="space-y-6">
-                  {song.listeningtasks.map((task, index) =>
-                    task.trueorfalse ? (
-                      <div
-                        key={index}
-                        className="rounded-3xl border border-white/10 bg-black/20 p-5"
-                      >
-                        <h3 className="mb-4 text-lg font-semibold text-white">
-                          {task.name}
-                        </h3>
-                        <TrueOrFalse test={task.trueorfalse.task} />
-                      </div>
-                    ) : task.picturematch ? (
-                      <div
-                        key={index}
-                        className="rounded-3xl border border-white/10 bg-black/20 p-5"
-                      >
-                        <h3 className="mb-4 text-lg font-semibold text-white">
-                          {task.name}
-                        </h3>
-                        <PictureMatchGame pairs={task.picturematch.pairs} />
-                      </div>
-                    ) : null,
-                  )}
-                </div>
-              ) : (
-                <p className="text-zinc-400">No listening tasks yet.</p>
-              )}
+              <ListeningSection tasks={song.listeningtasks} />
             </SectionCard>
 
             <SectionCard
@@ -386,13 +252,7 @@ export default function Details({ song }: { song: Lesson | null }) {
               isOpen={openSections.includes("quiz")}
               onToggle={() => toggleSection("quiz")}
             >
-              {song.testyourself ? (
-                <div className="rounded-3xl border border-white/10 bg-black/20 p-5">
-                  <TestYouSelf test={song.testyourself} />
-                </div>
-              ) : (
-                <p className="text-zinc-400">No final test yet.</p>
-              )}
+              <QuizSection test={song.testyourself} />
             </SectionCard>
           </div>
         </div>
