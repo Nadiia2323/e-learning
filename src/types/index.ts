@@ -211,3 +211,20 @@ export interface AnswerDetail {
 
   isCorrect: boolean;
 }
+
+/* ================= SECTION ================= */
+export type SectionKey =
+  | "video"
+  | "reading"
+  | "speaking"
+  | "grammar"
+  | "listening"
+  | "quiz";
+
+export type SectionConfig = {
+  key: SectionKey;
+  title: string;
+  subtitle: string;
+  content: React.ReactNode;
+  show: boolean;
+};
