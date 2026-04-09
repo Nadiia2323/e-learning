@@ -7,6 +7,7 @@ export interface Lesson {
   author: string;
   lyric: string;
   video: string;
+  sections: string[];
 
   tasks: {
     questions?: string[];

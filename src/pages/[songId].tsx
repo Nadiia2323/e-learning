@@ -45,10 +45,12 @@ export async function getServerSideProps({
       song: song ? JSON.parse(JSON.stringify(song)) : null,
     },
   };
+  console.log("songId from params:", songId);
 }
 
 export default function Details({ song }: { song: Lesson | null }) {
   const router = useRouter();
+  console.log("song :>> ", song);
 
   const [openSections, setOpenSections] = useState<SectionKey[]>([]);
   const toggleSection = (section: SectionKey) => {

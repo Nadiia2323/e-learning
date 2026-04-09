@@ -54,6 +54,7 @@ export interface LessonType extends mongoose.Document {
   readingtasks?: Types.ObjectId[];
   listeningtasks?: Types.ObjectId[];
   testyourself?: Types.ObjectId;
+  sections: string[];
 }
 
 const LessonSchema = new mongoose.Schema({
@@ -84,6 +85,11 @@ const LessonSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "testyourself",
   },
+  sections: [
+    {
+      type: String,
+    },
+  ],
 });
 
 export const LessonModel =
