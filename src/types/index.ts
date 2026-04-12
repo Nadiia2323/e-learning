@@ -2,12 +2,20 @@ export type Id = string;
 
 /* ================= LESSON ================= */
 
+export interface LessonSection {
+  key: SectionKey;
+  title: string;
+  subtitle?: string;
+  order: number;
+  enabled: boolean;
+}
+
 export interface Lesson {
   _id: Id;
   author: string;
   lyric: string;
   video: string;
-  sections: string[];
+  sections: LessonSection[];
 
   tasks: {
     questions?: string[];
@@ -67,6 +75,72 @@ export interface Lesson {
     }[];
   };
 }
+
+// export interface Lesson {
+//   _id: Id;
+//   author: string;
+//   lyric: string;
+//   video: string;
+//   sections: Object[];
+
+//   tasks: {
+//     questions?: string[];
+//     funpic?: string;
+//     wordPairs?: {
+//       name: string;
+//       pairs: {
+//         word: string;
+//         description: string;
+//       }[];
+//     };
+//   };
+
+//   readingtasks?: {
+//     type: "cloze" | "options";
+//     name?: string;
+//     test?: {
+//       name: string;
+//       content: {
+//         text: string;
+//         blank: boolean;
+//       }[];
+//     };
+//     testOp?: {
+//       task: {
+//         sentence: string;
+//         options: string[];
+//         correctAnswers: string[];
+//       }[];
+//     };
+//   }[];
+
+//   listeningtasks?: {
+//     type: "truefalse" | "picture";
+//     name?: string;
+//     trueorfalse?: {
+//       task: {
+//         statement: string;
+//         isTrue: boolean;
+//       }[];
+//     };
+//     picturematch?: {
+//       pairs: {
+//         picture: string;
+//         description: string;
+//       }[];
+//     };
+//   }[];
+
+//   testyourself?: {
+//     test: {
+//       questionText: string;
+//       options: {
+//         optionText: string;
+//         isCorrect: boolean;
+//       }[];
+//     }[];
+//   };
+// }
 
 /* ================= TASK INTRO ================= */
 

@@ -54,8 +54,49 @@ export interface LessonType extends mongoose.Document {
   readingtasks?: Types.ObjectId[];
   listeningtasks?: Types.ObjectId[];
   testyourself?: Types.ObjectId;
-  sections: string[];
+  sections: SectionType[];
 }
+export type SectionKey =
+  | "video"
+  | "reading"
+  | "speaking"
+  | "grammar"
+  | "listening"
+  | "quiz";
+
+export interface SectionType {
+  key: SectionKey;
+  title: string;
+  subtitle?: string;
+  order: number;
+  enabled: boolean;
+}
+const SectionSchema = new mongoose.Schema<SectionType>(
+  {
+    key: {
+      type: String,
+      required: true,
+      enum: ["video", "reading", "speaking", "grammar", "listening", "quiz"],
+    },
+    title: {
+      type: String,
+      required: true,
+    },
+    subtitle: {
+      type: String,
+      default: "",
+    },
+    order: {
+      type: Number,
+      required: true,
+    },
+    enabled: {
+      type: Boolean,
+      default: true,
+    },
+  },
+  { _id: false },
+);
 
 const LessonSchema = new mongoose.Schema({
   lyric: String,
@@ -85,11 +126,9 @@ const LessonSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "testyourself",
   },
-  sections: [
-    {
-      type: String,
-    },
-  ],
+  sections: {
+    type: [SectionSchema],
+  },
 });
 
 export const LessonModel =

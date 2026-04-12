@@ -2,15 +2,10 @@ import React, { useMemo, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import dbConnect from "../utils/dbConnect";
-import { Lesson, SectionConfig, SectionKey } from "@/types";
-import ReadingSection from "./component/sections/ReadingSection";
-import SpeakingSection from "./component/sections/SpeakingSection";
-import ListeningSection from "./component/sections/ListeningSection";
-import QuizSection from "./component/sections/QuizSection";
+import { Lesson, SectionKey } from "@/types";
 import IntroSection from "./component/sections/IntroSection";
-import VideoSection from "./component/sections/VideoSection";
-import GrammarSection from "./component/sections/GrammarSection";
 import SectionCard from "./component/sections/SectionCard";
+import { SectionRenderer } from "./component/sections/SectionRenderer";
 
 export async function getServerSideProps({
   params,
@@ -45,12 +40,10 @@ export async function getServerSideProps({
       song: song ? JSON.parse(JSON.stringify(song)) : null,
     },
   };
-  console.log("songId from params:", songId);
 }
 
 export default function Details({ song }: { song: Lesson | null }) {
   const router = useRouter();
-  console.log("song :>> ", song);
 
   const [openSections, setOpenSections] = useState<SectionKey[]>([]);
   const toggleSection = (section: SectionKey) => {
@@ -60,54 +53,12 @@ export default function Details({ song }: { song: Lesson | null }) {
         : [...prev, section],
     );
   };
+  const sectionsConfig = useMemo(() => {
+    if (!song?.sections?.length) return [];
 
-  const sectionsConfig: SectionConfig[] = useMemo(() => {
-    if (!song) return [];
-
-    return [
-      {
-        key: "video",
-        title: "Video",
-        subtitle: "Watch and listen to the original song",
-        content: <VideoSection video={song.video} lyric={song.lyric} />,
-        show: !!song.video,
-      },
-      {
-        key: "reading",
-        title: "Reading",
-        subtitle: "Practice lyrics and reading tasks",
-        content: <ReadingSection tasks={song.readingtasks} />,
-        show: !!song.readingtasks?.length,
-      },
-      {
-        key: "speaking",
-        title: "Speaking",
-        subtitle: "Match words and practice vocabulary",
-        content: <SpeakingSection tasks={song.tasks} />,
-        show: !!song.tasks?.wordPairs,
-      },
-      {
-        key: "grammar",
-        title: "Grammar",
-        subtitle: "Review grammar",
-        content: <GrammarSection />,
-        show: true,
-      },
-      {
-        key: "listening",
-        title: "Listening",
-        subtitle: "Train understanding",
-        content: <ListeningSection tasks={song.listeningtasks} />,
-        show: !!song.listeningtasks?.length,
-      },
-      {
-        key: "quiz",
-        title: "Test yourself",
-        subtitle: "Final check",
-        content: <QuizSection test={song.testyourself} />,
-        show: !!song.testyourself,
-      },
-    ];
+    return [...song.sections]
+      .filter((s) => s.enabled)
+      .sort((a, b) => a.order - b.order);
   }, [song]);
 
   if (!song) {
@@ -167,19 +118,21 @@ export default function Details({ song }: { song: Lesson | null }) {
 
           {/* SECTIONS */}
           <div className="grid gap-6">
-            {sectionsConfig
-              .filter((section) => section.show)
-              .map((section) => (
+            {sectionsConfig.map((section) => {
+              const isOpen = openSections.includes(section.key);
+
+              return (
                 <SectionCard
                   key={section.key}
                   title={section.title}
                   subtitle={section.subtitle}
-                  isOpen={openSections.includes(section.key)}
+                  isOpen={isOpen}
                   onToggle={() => toggleSection(section.key)}
                 >
-                  {section.content}
+                  <SectionRenderer section={section} song={song} />
                 </SectionCard>
-              ))}
+              );
+            })}
           </div>
         </div>
       </main>
