@@ -2,21 +2,19 @@ import { UserContext } from "@/hooks/UserContext";
 import React, { useContext } from "react";
 
 export default function Profile() {
-  const { user, loading } = useContext(UserContext);
+  const context = useContext(UserContext);
 
-  if (loading)
-    return (
-      <div>
-        {" "}
-        <p>Loading...</p>
-      </div>
-    );
-  if (!user) return <div>User not found</div>;
+  if (!context) return <p>User context not available</p>;
+
+  const { user, loading } = context;
+
+  if (loading) return <p>Loading...</p>;
+  if (!user) return <p>User not found</p>;
 
   return (
     <div>
       <h1>Profile</h1>
-      <p>name: {user.email}</p>
+      <p>Email: {user.email}</p>
     </div>
   );
 }

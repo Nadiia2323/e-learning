@@ -1,6 +1,14 @@
+import Image from "next/image";
 import React from "react";
 
-export default function IntroSection({ tasks }) {
+type IntroSectionProps = {
+  tasks?: {
+    questions?: string[];
+    funpic?: string;
+  };
+};
+
+export default function IntroSection({ tasks }: IntroSectionProps) {
   return (
     <div className="mb-8 grid gap-6 lg:grid-cols-[1.4fr_0.9fr]">
       <div className="rounded-[32px] border border-white/10 bg-white/5 p-6 shadow-xl backdrop-blur-xl">
@@ -52,11 +60,14 @@ export default function IntroSection({ tasks }) {
 
         {tasks?.funpic ? (
           <div className="mt-6 overflow-hidden rounded-3xl border border-white/10 bg-black/20">
-            <img
-              src={tasks.funpic}
-              alt="Lesson meme"
-              className="h-full max-h-[340px] w-full object-cover"
-            />
+            <div className="relative mt-6 h-[340px] overflow-hidden rounded-3xl border border-white/10 bg-black/20">
+              <Image
+                src={tasks.funpic}
+                alt="Lesson meme"
+                fill
+                className="object-cover"
+              />
+            </div>
           </div>
         ) : (
           <div className="mt-6 rounded-3xl border border-dashed border-white/10 bg-black/20 p-8 text-sm text-zinc-500">

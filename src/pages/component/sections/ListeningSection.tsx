@@ -1,8 +1,12 @@
 import React from "react";
 import TrueOrFalse from "../TrueOrFalse";
 import PictureMatchGame from "../PictureMatchGame";
+import { LessonListeningTask, ListeningTask } from "@/types";
+type Props = {
+  tasks?: LessonListeningTask[];
+};
 
-export default function ListeningSection({ tasks }) {
+export default function ListeningSection({ tasks }: Props) {
   return (
     <div>
       {tasks?.length ? (

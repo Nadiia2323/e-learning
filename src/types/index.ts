@@ -53,94 +53,29 @@ export interface Lesson {
     name?: string;
     trueorfalse?: {
       task: {
+        _id: string;
         statement: string;
         isTrue: boolean;
       }[];
     };
     picturematch?: {
-      pairs: {
-        picture: string;
-        description: string;
-      }[];
+      pairs: PicturePair[];
     };
   }[];
 
   testyourself?: {
+    name: string;
     test: {
+      _id: string;
       questionText: string;
       options: {
+        _id: string;
         optionText: string;
         isCorrect: boolean;
       }[];
     }[];
   };
 }
-
-// export interface Lesson {
-//   _id: Id;
-//   author: string;
-//   lyric: string;
-//   video: string;
-//   sections: Object[];
-
-//   tasks: {
-//     questions?: string[];
-//     funpic?: string;
-//     wordPairs?: {
-//       name: string;
-//       pairs: {
-//         word: string;
-//         description: string;
-//       }[];
-//     };
-//   };
-
-//   readingtasks?: {
-//     type: "cloze" | "options";
-//     name?: string;
-//     test?: {
-//       name: string;
-//       content: {
-//         text: string;
-//         blank: boolean;
-//       }[];
-//     };
-//     testOp?: {
-//       task: {
-//         sentence: string;
-//         options: string[];
-//         correctAnswers: string[];
-//       }[];
-//     };
-//   }[];
-
-//   listeningtasks?: {
-//     type: "truefalse" | "picture";
-//     name?: string;
-//     trueorfalse?: {
-//       task: {
-//         statement: string;
-//         isTrue: boolean;
-//       }[];
-//     };
-//     picturematch?: {
-//       pairs: {
-//         picture: string;
-//         description: string;
-//       }[];
-//     };
-//   }[];
-
-//   testyourself?: {
-//     test: {
-//       questionText: string;
-//       options: {
-//         optionText: string;
-//         isCorrect: boolean;
-//       }[];
-//     }[];
-//   };
-// }
 
 /* ================= TASK INTRO ================= */
 
@@ -154,6 +89,7 @@ export interface TaskBlock {
 /* ================= WORD PAIRS ================= */
 
 export interface WordPair {
+  _id: string;
   word: string;
   description: string;
 }
@@ -226,6 +162,7 @@ export interface TrueOrFalse {
 /* ================= PICTURE MATCH ================= */
 
 export interface PicturePair {
+  _id: Id;
   picture: string;
   description: string;
 }
@@ -296,10 +233,17 @@ export type SectionKey =
   | "listening"
   | "quiz";
 
-export type SectionConfig = {
-  key: SectionKey;
-  title: string;
-  subtitle: string;
-  content: React.ReactNode;
-  show: boolean;
-};
+export interface LessonListeningTask {
+  type: "truefalse" | "picture";
+  name?: string;
+  trueorfalse?: {
+    task: {
+      _id: string;
+      statement: string;
+      isTrue: boolean;
+    }[];
+  };
+  picturematch?: {
+    pairs: PicturePair[];
+  };
+}

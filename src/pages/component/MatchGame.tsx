@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useMemo, useState } from "react";
 import { updateProgress } from "@/utils/updateProgress";
 import { useRouter } from "next/router";
 import { UserContext } from "@/hooks/UserContext";
+import { WordPair } from "@/types";
 
 type Pair = {
   _id: string;
@@ -11,7 +12,7 @@ type Pair = {
 };
 
 type Props = {
-  pairs: Pair[];
+  pairs: WordPair[];
 };
 
 export default function MatchGame({ pairs }: Props) {

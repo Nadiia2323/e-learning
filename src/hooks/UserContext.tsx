@@ -1,20 +1,27 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { User } from "@/types";
+import { createContext, useState, useEffect, ReactNode } from "react";
 
-export const userContextInitialValues = {
-  user: "",
-  loading: true,
-  setUser: () => {},
-  fetchUser: () => {},
+type UserContextType = {
+  user: User | null;
+  loading: boolean;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
+  fetchUser: () => Promise<void>;
 };
-export const UserContext = createContext(userContextInitialValues);
 
-export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState<string>("");
+export const UserContext = createContext<UserContextType | null>(null);
+
+type UserProviderProps = {
+  children: ReactNode;
+};
+
+export const UserProvider = ({ children }: UserProviderProps) => {
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+
   const fetchUser = async () => {
     try {
       const response = await fetch("/api/user");
-      const userData = await response.json();
+      const userData: User = await response.json();
       console.log("userData :>> ", userData);
       setUser(userData);
     } catch (error) {
@@ -24,6 +31,7 @@ export const UserProvider = ({ children }) => {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     fetchUser();
   }, []);

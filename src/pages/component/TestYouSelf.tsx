@@ -1,25 +1,9 @@
 import React, { useContext, useState } from "react";
-import ModalTest from "./ModalTest";
-import { updateProgress } from "@/utils/updateProgress";
 import { useRouter } from "next/router";
+import ModalTest from "./ModalTest";
 import { UserContext } from "@/hooks/UserContext";
-
-type TestOption = {
-  _id: string;
-  optionText: string;
-  isCorrect: boolean;
-};
-
-type TestQuestion = {
-  _id: string;
-  questionText: string;
-  options: TestOption[];
-};
-
-type TestData = {
-  name: string;
-  test: TestQuestion[];
-};
+import { updateProgress } from "@/utils/updateProgress";
+import { Lesson } from "@/types";
 
 type SelectedAnswer = {
   optionId: string;
@@ -28,7 +12,7 @@ type SelectedAnswer = {
 };
 
 type Props = {
-  test: TestData;
+  test: NonNullable<Lesson["testyourself"]>;
 };
 
 export default function TestYourself({ test }: Props) {
@@ -40,10 +24,14 @@ export default function TestYourself({ test }: Props) {
 
   const router = useRouter();
   const { songId } = router.query;
-  const lessonId = songId as string;
+  const lessonId = String(songId || "");
 
-  const { user } = useContext(UserContext);
-  const userEmail = user?.data?.email || "";
+  const context = useContext(UserContext);
+  const userEmail = context?.user?.email || "";
+
+  const totalQuestions = test.test.length;
+  const answeredCount = Object.keys(answers).length;
+  const allAnswered = answeredCount === totalQuestions;
 
   const handleReset = () => {
     setAnswers({});
@@ -60,25 +48,29 @@ export default function TestYourself({ test }: Props) {
   ) => {
     if (showModal) return;
 
-    setAnswers((prevAnswers) => ({
-      ...prevAnswers,
-      [questionId]: { optionId, userAnswer: optionText, isCorrect },
+    setAnswers((prev) => ({
+      ...prev,
+      [questionId]: {
+        optionId,
+        userAnswer: optionText,
+        isCorrect,
+      },
     }));
   };
 
   const handleSubmit = async () => {
-    const correctAnswers = Object.values(answers).filter(
+    const correctAnswersCount = Object.values(answers).filter(
       (answer) => answer.isCorrect,
-    );
+    ).length;
 
-    const progress = test.test.length
-      ? (correctAnswers.length / test.test.length) * 100
+    const progress = totalQuestions
+      ? (correctAnswersCount / totalQuestions) * 100
       : 0;
-
     const completed = progress === 100;
-    const resultMessage = `You got ${correctAnswers.length} out of ${test.test.length} correct.`;
 
-    setResult(resultMessage);
+    setResult(
+      `You got ${correctAnswersCount} out of ${totalQuestions} correct.`,
+    );
     setNewProgress(progress);
     setShowModal(true);
 
@@ -133,7 +125,7 @@ export default function TestYourself({ test }: Props) {
         <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
           <p className="text-xs text-zinc-500">Answered</p>
           <p className="mt-1 text-lg font-semibold text-white">
-            {Object.keys(answers).length} / {test.test.length}
+            {answeredCount} / {totalQuestions}
           </p>
         </div>
       </div>
@@ -156,7 +148,6 @@ export default function TestYourself({ test }: Props) {
 
             <div className="space-y-3">
               {question.options.map((option) => {
-                const isAnswerChecked = showModal;
                 const selected = answers[question._id];
                 const isSelectedOption = selected?.optionId === option._id;
                 const isCorrectAnswer = selected?.isCorrect;
@@ -164,7 +155,7 @@ export default function TestYourself({ test }: Props) {
                 let optionClass =
                   "w-full rounded-2xl border px-4 py-3 text-left text-sm transition";
 
-                if (!isAnswerChecked) {
+                if (!showModal) {
                   optionClass += isSelectedOption
                     ? " border-fuchsia-400 bg-fuchsia-500/15 text-white"
                     : " border-white/10 bg-white/5 text-zinc-300 hover:bg-white/10 hover:text-white";
@@ -209,7 +200,7 @@ export default function TestYourself({ test }: Props) {
         <button
           type="button"
           onClick={handleSubmit}
-          disabled={isSubmitting || test.test.length === 0}
+          disabled={isSubmitting || totalQuestions === 0 || !allAnswered}
           className="rounded-2xl bg-gradient-to-r from-pink-500 via-fuchsia-500 to-indigo-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-fuchsia-500/20 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-60"
         >
           {isSubmitting ? "Saving..." : "Submit"}

@@ -3,18 +3,14 @@ import { shuffleArray } from "@/utils/shuffleArray";
 import { updateProgress } from "@/utils/updateProgress";
 import { useRouter } from "next/router";
 import { UserContext } from "@/hooks/UserContext";
-
-type PicturePair = {
-  _id: string;
-  picture: string;
-  description: string;
-};
+import { PicturePair } from "@/types";
 
 type Props = {
   pairs: PicturePair[];
 };
 
 export default function PictureMatchGame({ pairs }: Props) {
+  console.log("pairs :>> ", pairs);
   const [options, setOptions] = useState<string[]>([]);
   const [selectedOptions, setSelectedOptions] = useState<
     Record<string, string>

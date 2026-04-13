@@ -9,8 +9,9 @@ export default function Login() {
     email: "",
     password: "",
   });
-
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
   const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,23 +21,30 @@ export default function Login() {
     }));
   };
 
-  const handleSignIn = async (e: React.FormEvent) => {
+  const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
 
-    const response = await signIn("credentials", {
-      email: credentials.email,
-      password: credentials.password,
-      redirect: false,
-      callbackUrl: "/songs",
-    });
+    try {
+      const response = await signIn("credentials", {
+        email: credentials.email,
+        password: credentials.password,
+        redirect: false,
+        callbackUrl: "/songs",
+      });
 
-    setLoading(false);
+      if (response?.ok) {
+        router.push(response.url || "/songs");
+        return;
+      }
 
-    if (response?.ok) {
-      router.push(response.url || "/songs");
-    } else {
-      alert("Invalid credentials");
+      setError("Invalid credentials");
+    } catch (err) {
+      console.error("Sign in error:", err);
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -120,6 +128,12 @@ export default function Login() {
                     />
                   </div>
 
+                  {error && (
+                    <p className="text-sm text-red-400" role="alert">
+                      {error}
+                    </p>
+                  )}
+
                   <button
                     type="submit"
                     disabled={loading}
@@ -138,6 +152,7 @@ export default function Login() {
                 </div>
 
                 <button
+                  type="button"
                   onClick={() => signIn("google", { callbackUrl: "/songs" })}
                   className="flex w-full items-center justify-center gap-3 rounded-2xl border border-white/10 bg-white/5 py-3.5 text-sm font-medium text-white transition hover:bg-white/10"
                 >
@@ -151,6 +166,7 @@ export default function Login() {
                 </button>
 
                 <button
+                  type="button"
                   onClick={() => router.push("/songs")}
                   className="mt-5 w-full text-center text-sm text-zinc-400 transition hover:text-white"
                 >
