@@ -1,39 +1,37 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { shuffleArray } from "@/utils/shuffleArray";
 import { updateProgress } from "@/utils/updateProgress";
 import { useRouter } from "next/router";
-import { UserContext } from "@/hooks/UserContext";
-import { PicturePair } from "@/types";
+import { useUser } from "@/hooks/UserContext";
+import { PicturePair, AnswerPayload } from "@/types";
 
 type Props = {
   pairs: PicturePair[];
 };
 
+type Result = {
+  correct: number;
+  total: number;
+};
+
 export default function PictureMatchGame({ pairs }: Props) {
-  console.log("pairs :>> ", pairs);
   const [options, setOptions] = useState<string[]>([]);
   const [selectedOptions, setSelectedOptions] = useState<
     Record<string, string>
   >({});
   const [checked, setChecked] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [result, setResult] = useState<{
-    correct: number;
-    total: number;
-  } | null>(null);
+  const [result, setResult] = useState<Result | null>(null);
 
-  const { user } = useContext(UserContext);
-  const userEmail = user?.data?.email || "";
+  const { user } = useUser();
+  const userEmail = user?.email || "";
 
   const router = useRouter();
   const { songId } = router.query;
   const lessonId = songId as string;
 
   useEffect(() => {
-    const shuffledDescriptions = shuffleArray(
-      pairs.map((pair) => pair.description),
-    );
-    setOptions(shuffledDescriptions);
+    setOptions(shuffleArray(pairs.map((pair) => pair.description)));
     setSelectedOptions({});
     setChecked(false);
     setResult(null);
@@ -43,7 +41,7 @@ export default function PictureMatchGame({ pairs }: Props) {
     return Object.values(selectedOptions).filter(Boolean).length;
   }, [selectedOptions]);
 
-  const handleSelectOption = (pictureId: string, description: string) => {
+  const handleSelectChange = (pictureId: string, description: string) => {
     if (checked) return;
 
     setSelectedOptions((prev) => ({
@@ -62,16 +60,19 @@ export default function PictureMatchGame({ pairs }: Props) {
   const handleSubmit = async () => {
     let correctCount = 0;
 
-    const answers = pairs.map((pair) => {
-      const isCorrect = selectedOptions[pair._id] === pair.description;
+    const answers: AnswerPayload[] = pairs.map((pair) => {
+      const userAnswer = selectedOptions[pair._id] || "";
+      const isCorrect = userAnswer === pair.description;
+
       if (isCorrect) {
         correctCount++;
       }
 
       return {
         taskId: pair._id,
-        answerType: "pictureMatch",
-        userAnswer: selectedOptions[pair._id] || "",
+        answerId: pair._id,
+        answerType: "picture-match",
+        userAnswer,
         isCorrect,
       };
     });
@@ -86,10 +87,7 @@ export default function PictureMatchGame({ pairs }: Props) {
 
     setChecked(true);
 
-    if (!lessonId || !userEmail) {
-      console.warn("Missing lessonId or user email");
-      return;
-    }
+    if (!lessonId || !userEmail) return;
 
     try {
       setIsSubmitting(true);
@@ -126,12 +124,10 @@ export default function PictureMatchGame({ pairs }: Props) {
 
       <div className="grid gap-5 md:grid-cols-2">
         {pairs.map((pair, index) => {
-          const isCorrect =
-            checked && selectedOptions[pair._id] === pair.description;
+          const selectedValue = selectedOptions[pair._id] || "";
+          const isCorrect = checked && selectedValue === pair.description;
           const isIncorrect =
-            checked &&
-            selectedOptions[pair._id] &&
-            selectedOptions[pair._id] !== pair.description;
+            checked && selectedValue && selectedValue !== pair.description;
 
           return (
             <div
@@ -176,8 +172,8 @@ export default function PictureMatchGame({ pairs }: Props) {
                 </label>
 
                 <select
-                  value={selectedOptions[pair._id] || ""}
-                  onChange={(e) => handleSelectOption(pair._id, e.target.value)}
+                  value={selectedValue}
+                  onChange={(e) => handleSelectChange(pair._id, e.target.value)}
                   disabled={checked}
                   className={[
                     "w-full rounded-2xl border px-4 py-3 text-sm outline-none transition",

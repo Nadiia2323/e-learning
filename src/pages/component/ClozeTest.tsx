@@ -1,43 +1,22 @@
 import { shuffleArray } from "@/utils/shuffleArray";
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import { updateProgress } from "@/utils/updateProgress";
-import { UserContext } from "@/hooks/UserContext";
-
-type ClozeItem = {
-  _id: string;
-  text?: string;
-  blank?: boolean;
-  answer?: string;
-};
-
-type ClozeTestType = {
-  _id: string;
-  name?: string;
-  content: ClozeItem[];
-};
-
-type AnswerPayload = {
-  taskId: string;
-  answerId: string;
-  answerType: string;
-  userAnswer: string;
-  isCorrect: boolean;
-};
+import { useUser } from "@/hooks/UserContext";
+import { AnswerPayload, ClozeTestType } from "@/types";
 
 export default function ClozeTest({ clozeTest }: { clozeTest: ClozeTestType }) {
-  const [allAnswers, setAllAnswers] = useState<string[]>([]);
-  const [availableAnswers, setAvailableAnswers] = useState<string[]>([]);
-  const [userAnswers, setUserAnswers] = useState<string[]>([]);
-  const [prevAnswers, setPrevAnswers] = useState<string[]>([]);
+  const [userAnswers, setUserAnswers] = useState<string[]>(
+    clozeTest.content.map(() => ""),
+  );
   const [isCheckPerformed, setIsCheckPerformed] = useState(false);
   const [score, setScore] = useState<{ correct: number; total: number } | null>(
     null,
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { user } = useContext(UserContext);
-  const userEmail = user?.data?.email || "";
+  const { user } = useUser();
+  const userEmail = user?.email || "";
   const router = useRouter();
   const { songId } = router.query;
   const lessonId = songId as string;
@@ -47,46 +26,25 @@ export default function ClozeTest({ clozeTest }: { clozeTest: ClozeTestType }) {
     [clozeTest],
   );
 
-  useEffect(() => {
-    if (clozeTest?.content) {
-      const answers = clozeTest.content
-        .filter((item) => item.blank && item.answer)
-        .map((item) => item.answer as string);
+  const allAnswers = useMemo(() => {
+    const answers = clozeTest.content
+      .filter((item) => item.blank && item.answer)
+      .map((item) => item.answer as string);
 
-      const uniqueAnswers = [...new Set(answers)];
-      const shuffled = shuffleArray(uniqueAnswers);
-
-      setAllAnswers(shuffled);
-      setAvailableAnswers(shuffled);
-      setUserAnswers(clozeTest.content.map(() => ""));
-      setPrevAnswers(clozeTest.content.map(() => ""));
-      setIsCheckPerformed(false);
-      setScore(null);
-    }
+    return shuffleArray([...new Set(answers)]);
   }, [clozeTest]);
+
+  const availableAnswers = useMemo(() => {
+    return allAnswers.filter((answer: string) => !userAnswers.includes(answer));
+  }, [allAnswers, userAnswers]);
 
   const handleSelectChange = (
     index: number,
     event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
-    const newAnswer = event.target.value;
-    const prevAnswer = userAnswers[index];
-
     const newAnswers = [...userAnswers];
-    newAnswers[index] = newAnswer;
+    newAnswers[index] = event.target.value;
     setUserAnswers(newAnswers);
-
-    if (prevAnswer) {
-      setAvailableAnswers((prev) => [...prev, prevAnswer].sort());
-    }
-
-    setAvailableAnswers((prev) =>
-      prev.filter((answer) => answer !== newAnswer),
-    );
-
-    const newPrevAnswers = [...prevAnswers];
-    newPrevAnswers[index] = newAnswer;
-    setPrevAnswers(newPrevAnswers);
   };
 
   const checkAnswers = async () => {
@@ -125,7 +83,6 @@ export default function ClozeTest({ clozeTest }: { clozeTest: ClozeTestType }) {
       try {
         setIsSubmitting(true);
         await updateProgress(userEmail, lessonId, progress, completed, answers);
-        console.log("Progress updated successfully");
       } catch (error) {
         console.error("Failed to update progress:", error);
       } finally {
@@ -136,8 +93,6 @@ export default function ClozeTest({ clozeTest }: { clozeTest: ClozeTestType }) {
 
   const resetAnswers = () => {
     setUserAnswers(clozeTest.content.map(() => ""));
-    setAvailableAnswers([...allAnswers]);
-    setPrevAnswers(clozeTest.content.map(() => ""));
     setIsCheckPerformed(false);
     setScore(null);
   };
@@ -170,7 +125,7 @@ export default function ClozeTest({ clozeTest }: { clozeTest: ClozeTestType }) {
 
         <div className="flex flex-wrap gap-2">
           {availableAnswers.length > 0 ? (
-            availableAnswers.map((answer, index) => (
+            availableAnswers.map((answer: string, index: number) => (
               <span
                 key={`${answer}-${index}`}
                 className="rounded-full border border-white/10 bg-black/20 px-3 py-1.5 text-sm text-zinc-200"
@@ -188,19 +143,24 @@ export default function ClozeTest({ clozeTest }: { clozeTest: ClozeTestType }) {
 
       <div className="rounded-3xl border border-white/10 bg-black/20 p-4 text-base leading-8 text-zinc-200 md:p-5 md:text-lg">
         {clozeTest.content.map((item, index) => {
+          const currentValue = userAnswers[index] || "";
+
           const isCorrect =
             isCheckPerformed &&
-            (userAnswers[index]?.toLowerCase() || "") ===
-              (item.answer?.toLowerCase() || "");
+            currentValue.toLowerCase() === (item.answer?.toLowerCase() || "");
 
           const isIncorrect =
-            isCheckPerformed && item.blank && userAnswers[index] && !isCorrect;
+            isCheckPerformed && item.blank && currentValue && !isCorrect;
 
           if (item.blank) {
+            const selectOptions = currentValue
+              ? [...availableAnswers, currentValue].sort()
+              : [...availableAnswers].sort();
+
             return (
               <span key={item._id} className="inline-block px-1 align-middle">
                 <select
-                  value={userAnswers[index] || ""}
+                  value={currentValue}
                   onChange={(event) => handleSelectChange(index, event)}
                   disabled={isCheckPerformed}
                   className={[
@@ -218,14 +178,11 @@ export default function ClozeTest({ clozeTest }: { clozeTest: ClozeTestType }) {
                   ].join(" ")}
                 >
                   <option value="">Select</option>
-                  {[...availableAnswers, prevAnswers[index]]
-                    .filter(Boolean)
-                    .sort()
-                    .map((option, optionIndex) => (
-                      <option key={`${option}-${optionIndex}`} value={option}>
-                        {option}
-                      </option>
-                    ))}
+                  {selectOptions.map((option, optionIndex) => (
+                    <option key={`${option}-${optionIndex}`} value={option}>
+                      {option}
+                    </option>
+                  ))}
                 </select>
               </span>
             );

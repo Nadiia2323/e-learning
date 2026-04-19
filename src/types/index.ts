@@ -110,6 +110,25 @@ export interface ReadingTask {
 }
 
 /* ================= CLOZE TEST ================= */
+export type ClozeItem = {
+  _id: string;
+  text?: string;
+  blank?: boolean;
+  answer?: string;
+};
+
+export type ClozeTestType = {
+  _id: string;
+  name?: string;
+  content: ClozeItem[];
+};
+export type AnswerPayload = {
+  taskId: string;
+  answerId: string;
+  answerType: "cloze-test" | "match" | "true-false" | "picture-match";
+  userAnswer: string;
+  isCorrect: boolean;
+};
 
 export interface ClozeContent {
   text: string;

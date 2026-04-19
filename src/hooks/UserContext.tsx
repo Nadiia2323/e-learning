@@ -1,5 +1,11 @@
 import { User } from "@/types";
-import { createContext, useState, useEffect, ReactNode } from "react";
+import {
+  createContext,
+  useState,
+  useEffect,
+  ReactNode,
+  useContext,
+} from "react";
 
 type UserContextType = {
   user: User | null;
@@ -41,4 +47,11 @@ export const UserProvider = ({ children }: UserProviderProps) => {
       {children}
     </UserContext.Provider>
   );
+};
+export const useUser = () => {
+  const context = useContext(UserContext);
+  if (!context) {
+    throw new Error("useUser must be used within UserProvider");
+  }
+  return context;
 };

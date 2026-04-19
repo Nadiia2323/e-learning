@@ -2,7 +2,7 @@ import { shuffleArray } from "@/utils/shuffleArray";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import { updateProgress } from "@/utils/updateProgress";
 import { useRouter } from "next/router";
-import { UserContext } from "@/hooks/UserContext";
+import { UserContext, useUser } from "@/hooks/UserContext";
 import { WordPair } from "@/types";
 
 type Pair = {
@@ -28,8 +28,8 @@ export default function MatchGame({ pairs }: Props) {
   } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { user } = useContext(UserContext);
-  const userEmail = user?.data?.email || "";
+  const { user } = useUser();
+  const userEmail = user?.email || "";
 
   const router = useRouter();
   const { songId } = router.query;

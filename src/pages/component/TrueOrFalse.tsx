@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { useRouter } from "next/router";
 import { updateProgress } from "@/utils/updateProgress";
-import { UserContext } from "@/hooks/UserContext";
+import { UserContext, useUser } from "@/hooks/UserContext";
 
 type TrueOrFalseItem = {
   _id: string;
@@ -22,8 +22,8 @@ export default function TrueOrFalse({ test }: Props) {
     total: number;
   } | null>(null);
 
-  const { user } = useContext(UserContext);
-  const userEmail = user?.data?.email || "";
+  const { user } = useUser();
+  const userEmail = user?.email || "";
 
   const router = useRouter();
   const { songId } = router.query;
