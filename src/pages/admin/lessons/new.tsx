@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import React, { useState } from "react";
 
 type LessonType = {
@@ -12,6 +13,8 @@ export default function NewLessonPage() {
     author: "",
     video: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -22,17 +25,30 @@ export default function NewLessonPage() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    fetch("api/admin/lessons", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(lesson),
-    });
-    console.log("lesson:", lesson);
+    try {
+      if (!lesson.author || !lesson.lyric || !lesson.video) return;
+      setIsSubmitting(true);
+      const response = await fetch("/api/admin/lessons", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(lesson),
+      });
+      console.log("lesson:", lesson);
+      if (response.ok) {
+        router.push("/admin/lessons");
+      } else {
+        console.log("failed to create a lesson ");
+      }
+    } catch (error) {
+      console.log("error :>> ", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -56,10 +72,15 @@ export default function NewLessonPage() {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* SONG */}
             <div>
-              <label className="mb-2 block text-sm font-medium text-zinc-700">
+              <label
+                htmlFor="lyric"
+                className="mb-2 block text-sm font-medium text-zinc-700"
+              >
                 Song title
               </label>
               <input
+                required
+                id="lyric"
                 name="lyric"
                 value={lesson.lyric}
                 onChange={handleChange}
@@ -70,10 +91,15 @@ export default function NewLessonPage() {
 
             {/* AUTHOR */}
             <div>
-              <label className="mb-2 block text-sm font-medium text-zinc-700">
+              <label
+                htmlFor="author"
+                className="mb-2 block text-sm font-medium text-zinc-700"
+              >
                 Author
               </label>
               <input
+                required
+                id="author"
                 name="author"
                 value={lesson.author}
                 onChange={handleChange}
@@ -84,10 +110,15 @@ export default function NewLessonPage() {
 
             {/* VIDEO */}
             <div>
-              <label className="mb-2 block text-sm font-medium text-zinc-700">
+              <label
+                htmlFor="video"
+                className="mb-2 block text-sm font-medium text-zinc-700"
+              >
                 Video URL
               </label>
               <input
+                required
+                id="video"
                 name="video"
                 value={lesson.video}
                 onChange={handleChange}
@@ -99,6 +130,7 @@ export default function NewLessonPage() {
             {/* BUTTONS */}
             <div className="flex flex-col gap-3 pt-4 sm:flex-row sm:justify-end">
               <button
+                onClick={() => router.push("/admin/lessons")}
                 type="button"
                 className="rounded-xl border border-zinc-300 bg-white px-5 py-3 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100"
               >
@@ -106,10 +138,11 @@ export default function NewLessonPage() {
               </button>
 
               <button
+                disabled={isSubmitting}
                 type="submit"
-                className="rounded-xl bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-indigo-500"
+                className="rounded-xl bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-indigo-500 disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                Create lesson
+                {isSubmitting ? "Creating... " : "Create lesson"}
               </button>
             </div>
           </form>
