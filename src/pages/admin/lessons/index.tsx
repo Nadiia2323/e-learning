@@ -53,13 +53,24 @@ export default function Lessons({ data }: SongsProps) {
         <div className="rounded-3xl border border-zinc-200 bg-white p-6 shadow-md">
           {data.length > 0 ? (
             <div className="space-y-4">
-              {data.map((lesson: any, index) => (
+              {data.map((lesson: any) => (
                 <div
-                  key={index}
-                  className="rounded-2xl border border-zinc-200 p-4 hover:bg-zinc-50 transition"
+                  key={lesson._id}
+                  className="flex items-center justify-between rounded-2xl border border-zinc-200 p-4 transition hover:bg-zinc-50"
                 >
-                  <p className="font-semibold">{lesson.lyric}</p>
-                  <p className="text-sm text-zinc-500">{lesson.author}</p>
+                  <div>
+                    <p className="font-semibold">{lesson.lyric}</p>
+                    <p className="text-sm text-zinc-500">{lesson.author}</p>
+                  </div>
+
+                  <button
+                    onClick={() =>
+                      router.push(`/admin/lessons/${lesson._id}/edit`)
+                    }
+                    className="rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-indigo-500"
+                  >
+                    Edit
+                  </button>
                 </div>
               ))}
             </div>
