@@ -1,7 +1,8 @@
 import { LessonModel } from "@/models/Lesson";
+import { Lesson } from "@/types";
 import dbConnection from "lib/dbConnection";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useState } from "react";
 
 export async function getServerSideProps({
   params,
@@ -34,9 +35,38 @@ export async function getServerSideProps({
   };
 }
 
-export default function EditLessonPage({ song }) {
+export default function EditLessonPage({ song }: { song: Lesson | null }) {
   const router = useRouter();
+  const [formData, setFormData] = useState({
+    lyric: song?.lyric || "",
+    video: song?.video || "",
+    author: song?.author || "",
+  });
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
 
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch(`/api/admin/lessons/${song!._id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      if (response.ok) {
+        router.push("/admin/lessons");
+      } else {
+        console.log("failed to update :>> ");
+      }
+    } catch (error) {
+      console.log("error :>> ", error);
+    }
+  };
   if (!song) {
     return (
       <div className="min-h-screen bg-zinc-100 px-4 py-10 text-zinc-900">
@@ -79,7 +109,7 @@ export default function EditLessonPage({ song }) {
         </div>
 
         <div className="rounded-3xl border border-zinc-200 bg-white p-6 shadow-lg md:p-8">
-          <form className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label
                 htmlFor="lyric"
@@ -90,7 +120,8 @@ export default function EditLessonPage({ song }) {
               <input
                 id="lyric"
                 name="lyric"
-                defaultValue={song.lyric}
+                value={formData.lyric}
+                onChange={handleChange}
                 className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
               />
             </div>
@@ -105,7 +136,8 @@ export default function EditLessonPage({ song }) {
               <input
                 id="author"
                 name="author"
-                defaultValue={song.author}
+                value={formData.author}
+                onChange={handleChange}
                 className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
               />
             </div>
@@ -120,7 +152,8 @@ export default function EditLessonPage({ song }) {
               <input
                 id="video"
                 name="video"
-                defaultValue={song.video}
+                value={formData.video}
+                onChange={handleChange}
                 className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
               />
             </div>
