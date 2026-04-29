@@ -29,6 +29,18 @@ type SongsProps = {
 export default function Lessons({ data }: SongsProps) {
   const router = useRouter();
 
+  const deleteLesson = async (lessonId: string) => {
+    const response = await fetch(`/api/admin/lessons/${lessonId}`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (response.ok) {
+      console.log("deleted");
+      router.reload();
+    }
+  };
+
   return (
     <div className="min-h-screen bg-zinc-100 px-4 py-10 text-zinc-900">
       <div className="mx-auto max-w-4xl">
@@ -62,15 +74,23 @@ export default function Lessons({ data }: SongsProps) {
                     <p className="font-semibold">{lesson.lyric}</p>
                     <p className="text-sm text-zinc-500">{lesson.author}</p>
                   </div>
-
-                  <button
-                    onClick={() =>
-                      router.push(`/admin/lessons/${lesson._id}/edit`)
-                    }
-                    className="rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-indigo-500"
-                  >
-                    Edit
-                  </button>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() =>
+                        router.push(`/admin/lessons/${lesson._id}/edit`)
+                      }
+                      className="rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-indigo-500"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => deleteLesson(lesson._id)}
+                      className="rounded-xl bg-rose-600 px-5 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-rose-500"
+                    >
+                      {" "}
+                      Delete{" "}
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
