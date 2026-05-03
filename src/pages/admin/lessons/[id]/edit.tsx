@@ -1,8 +1,47 @@
 import { LessonModel } from "@/models/Lesson";
-import { Lesson } from "@/types";
+import LessonStructureEditor from "@/pages/component/admin/LessonStructureEditor";
+import { Lesson, LessonSectionForm } from "@/types";
 import dbConnection from "lib/dbConnection";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
+
+const defaultSections: LessonSectionForm[] = [
+  {
+    key: "video",
+    title: "Video",
+    subtitle: "Watch the video and get familiar with the song.",
+    order: 1,
+    enabled: true,
+  },
+  {
+    key: "reading",
+    title: "Reading",
+    subtitle: "Read the text and complete the exercises.",
+    order: 2,
+    enabled: true,
+  },
+  {
+    key: "speaking",
+    title: "Speaking",
+    subtitle: "Practice vocabulary and speaking tasks.",
+    order: 3,
+    enabled: true,
+  },
+  {
+    key: "listening",
+    title: "Listening",
+    subtitle: "Train your listening comprehension.",
+    order: 4,
+    enabled: true,
+  },
+  {
+    key: "quiz",
+    title: "Test yourself",
+    subtitle: "Check what you have learned in this lesson.",
+    order: 5,
+    enabled: true,
+  },
+];
 
 export async function getServerSideProps({
   params,
@@ -41,12 +80,17 @@ export default function EditLessonPage({ song }: { song: Lesson | null }) {
     lyric: song?.lyric || "",
     video: song?.video || "",
     author: song?.author || "",
+    sections:
+      song?.sections && song.sections.length > 0
+        ? song.sections
+        : defaultSections,
   });
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -157,6 +201,16 @@ export default function EditLessonPage({ song }: { song: Lesson | null }) {
                 className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
               />
             </div>
+
+            <LessonStructureEditor
+              sections={formData.sections}
+              onChange={(updatedSections) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  sections: updatedSections,
+                }))
+              }
+            />
 
             <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
               <p className="text-sm font-medium text-zinc-700">Lesson ID</p>

@@ -244,6 +244,13 @@ export interface AnswerDetail {
 }
 
 /* ================= SECTION ================= */
+export type LessonSectionForm = {
+  key: SectionKey;
+  title: string;
+  subtitle?: string;
+  order: number;
+  enabled: boolean;
+};
 export type SectionKey =
   | "video"
   | "reading"

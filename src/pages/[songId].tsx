@@ -44,6 +44,8 @@ export async function getServerSideProps({
 
 export default function Details({ song }: { song: Lesson | null }) {
   const router = useRouter();
+  const { from } = router.query;
+  const isAdmin = from === "admin";
 
   const [openSections, setOpenSections] = useState<SectionKey[]>([]);
   const toggleSection = (section: SectionKey) => {
@@ -84,10 +86,10 @@ export default function Details({ song }: { song: Lesson | null }) {
 
         <div className="relative z-10 mx-auto max-w-7xl px-6 py-10">
           <button
-            onClick={() => router.push("/songs")}
+            onClick={() => router.push(isAdmin ? "/admin/lessons" : "/songs")}
             className="mb-6 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-zinc-300 backdrop-blur transition hover:bg-white/10 hover:text-white"
           >
-            ← Back to songs
+            {isAdmin ? "← Back to admin" : " ← Back to songs"}
           </button>
 
           {/* HERO */}

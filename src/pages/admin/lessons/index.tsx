@@ -90,6 +90,12 @@ export default function Lessons({ data }: SongsProps) {
                       {" "}
                       Delete{" "}
                     </button>
+                    <button
+                      className="rounded-x1"
+                      onClick={() => router.push(`/${lesson._id}?from=admin`)}
+                    >
+                      View
+                    </button>
                   </div>
                 </div>
               ))}
