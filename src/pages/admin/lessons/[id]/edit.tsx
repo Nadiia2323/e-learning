@@ -5,43 +5,43 @@ import dbConnection from "lib/dbConnection";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 
-const defaultSections: LessonSectionForm[] = [
-  {
-    key: "video",
-    title: "Video",
-    subtitle: "Watch the video and get familiar with the song.",
-    order: 1,
-    enabled: true,
-  },
-  {
-    key: "reading",
-    title: "Reading",
-    subtitle: "Read the text and complete the exercises.",
-    order: 2,
-    enabled: true,
-  },
-  {
-    key: "speaking",
-    title: "Speaking",
-    subtitle: "Practice vocabulary and speaking tasks.",
-    order: 3,
-    enabled: true,
-  },
-  {
-    key: "listening",
-    title: "Listening",
-    subtitle: "Train your listening comprehension.",
-    order: 4,
-    enabled: true,
-  },
-  {
-    key: "quiz",
-    title: "Test yourself",
-    subtitle: "Check what you have learned in this lesson.",
-    order: 5,
-    enabled: true,
-  },
-];
+// const defaultSections: LessonSectionForm[] = [
+//   {
+//     key: "video",
+//     title: "Video",
+//     subtitle: "Watch the video and get familiar with the song.",
+//     order: 1,
+//     enabled: true,
+//   },
+//   {
+//     key: "reading",
+//     title: "Reading",
+//     subtitle: "Read the text and complete the exercises.",
+//     order: 2,
+//     enabled: true,
+//   },
+//   {
+//     key: "speaking",
+//     title: "Speaking",
+//     subtitle: "Practice vocabulary and speaking tasks.",
+//     order: 3,
+//     enabled: true,
+//   },
+//   {
+//     key: "listening",
+//     title: "Listening",
+//     subtitle: "Train your listening comprehension.",
+//     order: 4,
+//     enabled: true,
+//   },
+//   {
+//     key: "quiz",
+//     title: "Test yourself",
+//     subtitle: "Check what you have learned in this lesson.",
+//     order: 5,
+//     enabled: true,
+//   },
+// ];
 
 export async function getServerSideProps({
   params,
@@ -80,11 +80,9 @@ export default function EditLessonPage({ song }: { song: Lesson | null }) {
     lyric: song?.lyric || "",
     video: song?.video || "",
     author: song?.author || "",
-    sections:
-      song?.sections && song.sections.length > 0
-        ? song.sections
-        : defaultSections,
+    sections: song?.sections || [],
   });
+  console.log("song.sections :>> ", song?.readingtasks);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
@@ -203,6 +201,7 @@ export default function EditLessonPage({ song }: { song: Lesson | null }) {
             </div>
 
             <LessonStructureEditor
+              readingtasks={song.readingtasks}
               sections={formData.sections}
               onChange={(updatedSections) =>
                 setFormData((prev) => ({

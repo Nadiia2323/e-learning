@@ -1,20 +1,23 @@
-import { LessonSectionForm } from "@/types";
+import { LessonSectionForm, ReadingTask } from "@/types";
+import ReadingTasksManager from "./ReadingTasksManager";
 
 type LessonStructureEditorProps = {
+  readingtasks: ReadingTask[];
   sections: LessonSectionForm[];
   onChange: (sections: LessonSectionForm[]) => void;
 };
 
-type SectionField = "title" | "subtitle" | "order" | "enabled";
+type SectionField = "order" | "enabled";
 
 export default function LessonStructureEditor({
+  readingtasks,
   sections,
   onChange,
 }: LessonStructureEditorProps) {
   const handleSectionChange = (
     key: LessonSectionForm["key"],
     field: SectionField,
-    value: string | number | boolean,
+    value: number | boolean,
   ) => {
     const updatedSections = sections.map((section) =>
       section.key === key ? { ...section, [field]: value } : section,
@@ -94,9 +97,13 @@ export default function LessonStructureEditor({
                 />
               </div>
 
-              <div className="mt-5 rounded-xl border border-dashed border-zinc-200 bg-zinc-50 p-4 text-sm text-zinc-500">
-                Tasks for this section will be managed here later.
-              </div>
+              {section.key === "reading" ? (
+                <ReadingTasksManager readingtasks={readingtasks} />
+              ) : (
+                <div className="mt-5 rounded-xl border border-dashed border-zinc-200 bg-zinc-50 p-4 text-sm text-zinc-500">
+                  Tasks for this section will be managed here later.
+                </div>
+              )}
             </div>
           ))}
       </div>

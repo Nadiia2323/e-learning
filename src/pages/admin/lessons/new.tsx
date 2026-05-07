@@ -1,3 +1,5 @@
+import LessonStructureEditor from "@/pages/component/admin/LessonStructureEditor";
+import { LessonSectionForm } from "@/types";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 
@@ -5,13 +7,52 @@ type LessonType = {
   lyric: string;
   author: string;
   video: string;
+  sections: LessonSectionForm[];
 };
+const defaultSections: LessonSectionForm[] = [
+  {
+    key: "video",
+    title: "Video",
+    subtitle: "Watch the video and get familiar with the song.",
+    order: 1,
+    enabled: true,
+  },
+  {
+    key: "reading",
+    title: "Reading",
+    subtitle: "Read the text and complete the exercises.",
+    order: 2,
+    enabled: true,
+  },
+  {
+    key: "speaking",
+    title: "Speaking",
+    subtitle: "Practice vocabulary and speaking tasks.",
+    order: 3,
+    enabled: true,
+  },
+  {
+    key: "listening",
+    title: "Listening",
+    subtitle: "Train your listening comprehension.",
+    order: 4,
+    enabled: true,
+  },
+  {
+    key: "quiz",
+    title: "Test yourself",
+    subtitle: "Check what you have learned in this lesson.",
+    order: 5,
+    enabled: true,
+  },
+];
 
 export default function NewLessonPage() {
   const [lesson, setLesson] = useState<LessonType>({
     lyric: "",
     author: "",
     video: "",
+    sections: defaultSections,
   });
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const router = useRouter();
@@ -126,6 +167,15 @@ export default function NewLessonPage() {
                 className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
               />
             </div>
+            <LessonStructureEditor
+              sections={lesson.sections}
+              onChange={(updatedSections) =>
+                setLesson((prev) => ({
+                  ...prev,
+                  sections: updatedSections,
+                }))
+              }
+            />
 
             {/* BUTTONS */}
             <div className="flex flex-col gap-3 pt-4 sm:flex-row sm:justify-end">

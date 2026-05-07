@@ -10,6 +10,7 @@ export default async function lessons(req, res) {
     lyric: req.body.lyric,
     author: req.body.author,
     video: req.body.video,
+    sections: req.body.sections,
   };
   try {
     const newLesson = await LessonModel.create(lesson);
