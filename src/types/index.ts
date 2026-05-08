@@ -104,6 +104,7 @@ export interface WordPairs {
 
 export interface ReadingTask {
   _id: Id;
+  type: "cloze" | "options";
   name: string;
   test?: Id;
   testOp?: Id;
