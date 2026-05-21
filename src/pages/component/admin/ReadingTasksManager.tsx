@@ -1,6 +1,7 @@
 import { ReadingTask } from "@/types";
 import { useState } from "react";
 import ClozeTestBuilder from "./ClozeTestBuilder";
+import SentenceOptionsBuilder from "./SentenceOptionsBuilder";
 type ReadingTasksManagerProps = {
   readingtasks: ReadingTask[];
 };
@@ -105,7 +106,11 @@ export default function ReadingTasksManager({
               <p className="font-medium text-zinc-800">{task.name}</p>
 
               <div className="text-zinc-500">
-                {task.type === "cloze" && <ClozeTestBuilder />}
+                {task.type === "cloze" ? (
+                  <ClozeTestBuilder />
+                ) : (
+                  <SentenceOptionsBuilder />
+                )}
                 {/* {task.test ? "Cloze test connected" : "No cloze test"} */}
               </div>
 
