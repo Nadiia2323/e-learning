@@ -7,7 +7,6 @@ type SentenceOption = {
   correctAnswer: string;
 };
 type SentenceTask = {
-  id: string;
   sentence: string;
   options: string[];
   correctAnswers: string[];
@@ -29,78 +28,187 @@ export default function SentenceOptionsBuilder() {
     console.log("formData :>> ", formData);
   };
   const handleAddOption = () => {
-    if (!formData.option.trim()) return;
-    setCurrentOptions((prev) => [...prev, formData.option]);
-    console.log("currentOptions :>> ", currentOptions);
-    setFormData((prev) => ({ ...prev, option: "" }));
-  };
+    const option = formData.option.trim();
 
+    if (!option) return;
+
+    if (currentOptions.includes(option)) return;
+
+    setCurrentOptions((prev) => [...prev, option]);
+
+    setFormData((prev) => ({
+      ...prev,
+      option: "",
+    }));
+  };
+  const handleSelectCorrectAnswer = (option: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      correctAnswer: option,
+    }));
+  };
+  const handleAddTask = () => {
+    if (!formData.sentence.trim()) return;
+    if (currentOptions.length < 2) return;
+    if (!formData.correctAnswer.trim()) return;
+
+    const newTask: SentenceTask = {
+      sentence: formData.sentence,
+      options: currentOptions,
+      correctAnswers: [formData.correctAnswer],
+    };
+
+    setTasks((prev) => [...prev, newTask]);
+
+    setFormData((prev) => ({
+      ...prev,
+      sentence: "",
+      option: "",
+      correctAnswer: "",
+    }));
+
+    setCurrentOptions([]);
+  };
+  const handleDeleteOption = (optionToDelete: string) => {
+    setCurrentOptions((prev) =>
+      prev.filter((option) => option !== optionToDelete),
+    );
+    if (optionToDelete === formData.correctAnswer) {
+      setFormData((prev) => ({ ...prev, correctAnswer: "" }));
+    }
+  };
   return (
-    <div className="mt-4 space-y-4 rounded-2xl border border-zinc-200 bg-zinc-50 p-5">
-      <div>
-        <h4 className="font-semibold text-zinc-900">
-          Sentence options builder
-        </h4>
-        <p className="mt-1 text-sm text-zinc-500">
-          Create a sentence task with answer options.
+    <div className="mt-4 max-w-2xl rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
+      <div className="mb-4">
+        <h3 className="text-base font-semibold text-zinc-900">
+          Sentence Options
+        </h3>
+        <p className="text-sm text-zinc-500">
+          Create tasks and save them to this lesson.
         </p>
       </div>
 
-      <div className="space-y-3 rounded-xl border border-zinc-200 bg-white p-4">
+      <div className="space-y-3">
         <input
           value={formData.sentence}
           onChange={handleChange}
           type="text"
           name="sentence"
-          placeholder="Enter sentence or question"
-          className="w-full rounded-xl border border-zinc-300 px-4 py-3 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
+          placeholder="Sentence: I ___ happy."
+          className="w-full rounded-xl border border-zinc-300 px-3 py-2 text-sm"
         />
 
-        <div className="grid gap-3 sm:grid-cols-[1fr_auto]">
+        <div className="flex gap-2">
           <input
             value={formData.option}
             onChange={handleChange}
             type="text"
             name="option"
-            placeholder="Add option"
-            className="rounded-xl border border-zinc-300 px-4 py-3 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
+            placeholder="Option"
+            className="flex-1 rounded-xl border border-zinc-300 px-3 py-2 text-sm"
           />
 
           <button
             onClick={handleAddOption}
             type="button"
-            className="rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-indigo-500"
+            className="rounded-xl bg-zinc-900 px-4 py-2 text-sm font-medium text-white"
           >
-            Add option
+            Add
           </button>
         </div>
-
-        <input
-          onChange={handleChange}
-          type="text"
-          value={formData.correctAnswer}
-          name="correctAnswer"
-          placeholder="Correct answer"
-          className="w-full rounded-xl border border-zinc-300 px-4 py-3 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
-        />
-      </div>
-
-      <div className="space-y-3">
-        <p className="text-sm font-medium text-zinc-700">Preview</p>
-
-        <div className="space-y-2 rounded-xl border border-zinc-200 bg-white p-4 text-sm text-zinc-500">
-          {currentOptions.length > 0 ? (
-            currentOptions.map((option) => (
-              <div
-                key={option}
-                className="rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2"
+        <div className="flex flex-wrap gap-2">
+          {currentOptions.map((option, index) => (
+            <div
+              key={`${option}-${index}`}
+              className={`flex items-center gap-2 rounded-full border px-3 py-1 text-sm ${
+                formData.correctAnswer === option
+                  ? "border-green-500 bg-green-50 text-green-700"
+                  : "border-zinc-300 bg-zinc-50 text-zinc-700"
+              }`}
+            >
+              <button
+                type="button"
+                onClick={() => handleSelectCorrectAnswer(option)}
               >
                 {option}
-              </div>
-            ))
-          ) : (
-            <p>No options yet</p>
-          )}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleDeleteOption(option)}
+                className="text-zinc-400 hover:text-red-500"
+              >
+                ×
+              </button>
+            </div>
+          ))}
+        </div>
+        {/* <div className="flex flex-wrap gap-2">
+          {currentOptions.map((option, index) => {
+            const isCorrect = formData.correctAnswer === option;
+
+            return (
+              <button
+                key={`${option}-${index}`}
+                type="button"
+                onClick={() => handleSelectCorrectAnswer(option)}
+                className={`rounded-full border px-3 py-1 text-sm transition ${
+                  isCorrect
+                    ? "border-green-500 bg-green-100 text-green-700"
+                    : "border-zinc-300 bg-zinc-50 text-zinc-700 hover:border-indigo-400"
+                }`}
+              >
+                {option}
+              </button>
+            );
+          })}
+        </div> */}
+
+        <div className="flex gap-2 pt-2">
+          <button
+            type="button"
+            onClick={handleAddTask}
+            disabled={
+              !formData.sentence ||
+              currentOptions.length < 2 ||
+              !formData.correctAnswer
+            }
+            className="flex-1 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white disabled:bg-zinc-300"
+          >
+            Add task
+          </button>
+
+          {/* <button
+            type="button"
+            onClick={handleSave}
+            disabled={tasks.length === 0}
+            className="flex-1 rounded-xl bg-green-600 px-4 py-2 text-sm font-semibold text-white disabled:bg-zinc-300"
+          >
+            Save
+          </button> */}
+        </div>
+      </div>
+
+      <div className="mt-5 border-t border-zinc-200 pt-4">
+        <p className="mb-2 text-sm font-medium text-zinc-700">
+          Added tasks: {tasks.length}
+        </p>
+
+        <div className="space-y-2">
+          {tasks.map((task, index) => (
+            <div
+              key={index}
+              className="rounded-xl bg-zinc-50 px-3 py-2 text-sm"
+            >
+              <p className="font-medium text-zinc-900">
+                {index + 1}. {task.sentence}
+              </p>
+              <p className="text-zinc-500">{task.options.join(" / ")}</p>
+              <p className="text-green-600">
+                Correct: {task.correctAnswers[0]}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
     </div>

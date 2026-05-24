@@ -1,14 +1,16 @@
+import { ClozeContentItem } from "@/types";
 import React, { useState } from "react";
 
-type ClozeContentItem = {
-  id: string;
-  text: string;
-  blank: boolean;
-  answer?: string;
+type ClozeTestBuilderProps = {
+  value: ClozeContentItem[];
+  onChange: React.Dispatch<React.SetStateAction<ClozeContentItem[]>>;
 };
 
-export default function ClozeTestBuilder() {
-  const [content, setContent] = useState<ClozeContentItem[]>([]);
+export default function ClozeTestBuilder({
+  value,
+  onChange,
+}: ClozeTestBuilderProps) {
+  // const [content, setContent] = useState<ClozeContentItem[]>([]);
 
   const [block, setBlock] = useState({
     text: "",
@@ -27,10 +29,9 @@ export default function ClozeTestBuilder() {
   const handleAddBlock = () => {
     if (!block.text.trim()) return;
 
-    setContent((prev) => [
+    onChange((prev) => [
       ...prev,
       {
-        id: crypto.randomUUID(),
         text: block.text,
         blank: block.blank,
         answer: block.blank ? block.text : undefined,
@@ -42,58 +43,95 @@ export default function ClozeTestBuilder() {
       blank: false,
     });
   };
+  const handleDeleteBlock = (indexToDelete: number) => {
+    onChange((prev) => prev.filter((_, index) => index !== indexToDelete));
+  };
 
   return (
-    <div className="mt-4 space-y-4 rounded-2xl border border-zinc-200 bg-zinc-50 p-5">
-      <div className="space-y-3 rounded-xl border border-zinc-200 bg-white p-4">
+    <div className="rounded-xl border border-zinc-200 bg-white p-4">
+      <div className="mb-3">
+        <h4 className="text-sm font-semibold text-zinc-900">Cloze Test</h4>
+        <p className="text-xs text-zinc-500">
+          Add text blocks and mark missing words as blanks.
+        </p>
+      </div>
+
+      <div className="space-y-3">
         <input
           type="text"
           name="text"
           value={block.text}
           onChange={handleChange}
-          placeholder="Enter text or blank answer"
-          className="w-full rounded-xl border border-zinc-300 px-4 py-3 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
+          placeholder="Text or missing word"
+          className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-indigo-500"
         />
 
-        <label className="flex items-center gap-2 text-sm text-zinc-700">
-          <input
-            type="checkbox"
-            name="blank"
-            checked={block.blank}
-            onChange={handleChange}
-            className="h-4 w-4 rounded border-zinc-300 text-indigo-600 focus:ring-indigo-500"
-          />
-          This block is a blank
-        </label>
+        <div className="flex items-center justify-between gap-3">
+          <label className="flex items-center gap-2 text-sm text-zinc-700">
+            <input
+              type="checkbox"
+              name="blank"
+              checked={block.blank}
+              onChange={handleChange}
+              className="h-4 w-4 rounded border-zinc-300 text-indigo-600"
+            />
+            Blank
+          </label>
 
-        <button
-          type="button"
-          onClick={handleAddBlock}
-          className="rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-500"
-        >
-          Add block
-        </button>
+          <button
+            type="button"
+            onClick={handleAddBlock}
+            disabled={!block.text.trim()}
+            className="rounded-lg bg-indigo-600 px-3 py-2 text-sm font-semibold text-white disabled:bg-zinc-300"
+          >
+            Add block
+          </button>
+        </div>
       </div>
 
-      <div className="space-y-3">
-        {content.map((item) => (
-          <div
-            key={item.id}
-            className="rounded-xl border border-zinc-200 bg-white p-4"
-          >
-            <p className="font-medium text-zinc-800">{item.text}</p>
+      <div className="mt-4 rounded-lg bg-zinc-50 p-3">
+        <p className="mb-2 text-xs font-semibold text-zinc-500">Preview</p>
 
-            <p className="mt-2 text-sm text-zinc-500">
-              {item.blank ? "Blank block" : "Text block"}
-            </p>
+        {value.length > 0 ? (
+          <div className="flex flex-wrap gap-2 text-sm">
+            {value.map((item, index) => (
+              <span
+                key={index}
+                className={`flex items-center gap-2 rounded-lg px-2 py-1 ${
+                  item.blank
+                    ? "border border-indigo-200 bg-indigo-50 text-indigo-700"
+                    : "bg-white text-zinc-700"
+                }`}
+              >
+                <span>{item.blank ? `___ (${item.answer})` : item.text}</span>
 
-            {item.answer && (
-              <p className="mt-1 text-xs text-zinc-400">
-                Answer: {item.answer}
-              </p>
-            )}
+                <button
+                  type="button"
+                  onClick={() => handleDeleteBlock(index)}
+                  className="text-zinc-400 hover:text-red-500"
+                >
+                  ×
+                </button>
+              </span>
+            ))}
           </div>
-        ))}
+        ) : (
+          // <div className="flex flex-wrap gap-2 text-sm">
+          //   {content.map((item, index) => (
+          //     <span
+          //       key={index}
+          //       className={`rounded-lg px-2 py-1 ${
+          //         item.blank
+          //           ? "border border-indigo-200 bg-indigo-50 text-indigo-700"
+          //           : "bg-white text-zinc-700"
+          //       }`}
+          //     >
+          //       {item.blank ? `___ (${item.answer})` : item.text}
+          //     </span>
+          //   ))}
+          // </div>
+          <p className="text-sm text-zinc-400">No blocks yet</p>
+        )}
       </div>
     </div>
   );
