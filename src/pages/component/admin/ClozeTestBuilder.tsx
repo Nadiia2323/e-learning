@@ -3,15 +3,13 @@ import React, { useState } from "react";
 
 type ClozeTestBuilderProps = {
   value: ClozeContentItem[];
-  onChange: React.Dispatch<React.SetStateAction<ClozeContentItem[]>>;
+  onChange: (newValue: ClozeContentItem[]) => void;
 };
 
 export default function ClozeTestBuilder({
   value,
   onChange,
 }: ClozeTestBuilderProps) {
-  // const [content, setContent] = useState<ClozeContentItem[]>([]);
-
   const [block, setBlock] = useState({
     text: "",
     blank: false,
@@ -29,14 +27,13 @@ export default function ClozeTestBuilder({
   const handleAddBlock = () => {
     if (!block.text.trim()) return;
 
-    onChange((prev) => [
-      ...prev,
-      {
-        text: block.text,
-        blank: block.blank,
-        answer: block.blank ? block.text : undefined,
-      },
-    ]);
+    const newBlock = {
+      text: block.text.trim(),
+      blank: block.blank,
+      answer: block.blank ? block.text.trim() : undefined,
+    };
+
+    onChange([...value, newBlock]);
 
     setBlock({
       text: "",
@@ -44,7 +41,7 @@ export default function ClozeTestBuilder({
     });
   };
   const handleDeleteBlock = (indexToDelete: number) => {
-    onChange((prev) => prev.filter((_, index) => index !== indexToDelete));
+    onChange(value.filter((_, index) => index !== indexToDelete));
   };
 
   return (

@@ -11,8 +11,15 @@ type SentenceTask = {
   options: string[];
   correctAnswers: string[];
 };
+type SentenceOptionsBuilderProps = {
+  value: SentenceTask[];
+  onChange: (newValue: SentenceTask[]) => void;
+};
 
-export default function SentenceOptionsBuilder() {
+export default function SentenceOptionsBuilder({
+  value,
+  onChange,
+}: SentenceOptionsBuilderProps) {
   const [formData, setFormData] = useState<SentenceOption>({
     test: "",
     sentence: "",
@@ -20,8 +27,6 @@ export default function SentenceOptionsBuilder() {
     correctAnswer: "",
   });
   const [currentOptions, setCurrentOptions] = useState<string[]>([]);
-  const [tasks, setTasks] = useState<SentenceTask[]>([]);
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -58,7 +63,7 @@ export default function SentenceOptionsBuilder() {
       correctAnswers: [formData.correctAnswer],
     };
 
-    setTasks((prev) => [...prev, newTask]);
+    onChange([...value, newTask]);
 
     setFormData((prev) => ({
       ...prev,
@@ -68,6 +73,9 @@ export default function SentenceOptionsBuilder() {
     }));
 
     setCurrentOptions([]);
+  };
+  const handleDeleteTask = (indexToDelete: number) => {
+    onChange(value.filter((_, index) => index !== indexToDelete));
   };
   const handleDeleteOption = (optionToDelete: string) => {
     setCurrentOptions((prev) =>
@@ -143,26 +151,6 @@ export default function SentenceOptionsBuilder() {
             </div>
           ))}
         </div>
-        {/* <div className="flex flex-wrap gap-2">
-          {currentOptions.map((option, index) => {
-            const isCorrect = formData.correctAnswer === option;
-
-            return (
-              <button
-                key={`${option}-${index}`}
-                type="button"
-                onClick={() => handleSelectCorrectAnswer(option)}
-                className={`rounded-full border px-3 py-1 text-sm transition ${
-                  isCorrect
-                    ? "border-green-500 bg-green-100 text-green-700"
-                    : "border-zinc-300 bg-zinc-50 text-zinc-700 hover:border-indigo-400"
-                }`}
-              >
-                {option}
-              </button>
-            );
-          })}
-        </div> */}
 
         <div className="flex gap-2 pt-2">
           <button
@@ -177,25 +165,16 @@ export default function SentenceOptionsBuilder() {
           >
             Add task
           </button>
-
-          {/* <button
-            type="button"
-            onClick={handleSave}
-            disabled={tasks.length === 0}
-            className="flex-1 rounded-xl bg-green-600 px-4 py-2 text-sm font-semibold text-white disabled:bg-zinc-300"
-          >
-            Save
-          </button> */}
         </div>
       </div>
 
       <div className="mt-5 border-t border-zinc-200 pt-4">
         <p className="mb-2 text-sm font-medium text-zinc-700">
-          Added tasks: {tasks.length}
+          Added tasks: {value.length}
         </p>
 
         <div className="space-y-2">
-          {tasks.map((task, index) => (
+          {value.map((task, index) => (
             <div
               key={index}
               className="rounded-xl bg-zinc-50 px-3 py-2 text-sm"

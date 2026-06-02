@@ -2,6 +2,7 @@ import { LessonSectionForm, ReadingTask } from "@/types";
 import ReadingTasksManager from "./ReadingTasksManager";
 
 type LessonStructureEditorProps = {
+  lessonId: string;
   readingtasks?: ReadingTask[];
   sections: LessonSectionForm[];
   onChange: (sections: LessonSectionForm[]) => void;
@@ -10,6 +11,7 @@ type LessonStructureEditorProps = {
 type SectionField = "order" | "enabled";
 
 export default function LessonStructureEditor({
+  lessonId,
   readingtasks,
   sections,
   onChange,
@@ -98,7 +100,10 @@ export default function LessonStructureEditor({
               </div>
 
               {section.key === "reading" ? (
-                <ReadingTasksManager readingtasks={readingtasks || []} />
+                <ReadingTasksManager
+                  lessonId={lessonId}
+                  readingtasks={readingtasks || []}
+                />
               ) : (
                 <div className="mt-5 rounded-xl border border-dashed border-zinc-200 bg-zinc-50 p-4 text-sm text-zinc-500">
                   Tasks for this section will be managed here later.

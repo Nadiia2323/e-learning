@@ -6,6 +6,7 @@ import { useUser } from "@/hooks/UserContext";
 import { AnswerPayload, ClozeTestType } from "@/types";
 
 export default function ClozeTest({ clozeTest }: { clozeTest: ClozeTestType }) {
+  console.log("clozeTest :>> ", clozeTest);
   const [userAnswers, setUserAnswers] = useState<string[]>(
     clozeTest.content.map(() => ""),
   );

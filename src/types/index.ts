@@ -103,7 +103,7 @@ export interface WordPairs {
 /* ================= READING ================= */
 
 export interface ReadingTask {
-  _id: Id;
+  _id?: string;
   type: "cloze" | "options";
   name: string;
   test?: Id;
