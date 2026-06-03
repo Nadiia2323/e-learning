@@ -193,6 +193,7 @@ const clozetestSchema = new mongoose.Schema({
     {
       text: String,
       blank: Boolean,
+      answer: String,
       _id: false,
     },
   ],

@@ -37,7 +37,6 @@ export default function ReadingTasksManager({
     name: "",
     type: "cloze",
   });
-  console.log("lessonId :>> ", lessonId);
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
@@ -113,6 +112,23 @@ export default function ReadingTasksManager({
 
     const data = await response.json();
     console.log("saved:", data);
+  };
+  const handleDeleteTask = async (readingTaskId?: string) => {
+    if (!readingTaskId) return;
+
+    const response = await fetch(
+      `/api/admin/lessons/${lessonId}/readingtasks/${readingTaskId}`,
+      {
+        method: "DELETE",
+      },
+    );
+
+    const data = await response.json();
+    console.log("deleted:", data);
+
+    if (response.ok) {
+      setTasks((prev) => prev.filter((task) => task._id !== readingTaskId));
+    }
   };
 
   const resetForm = () => {
@@ -235,6 +251,13 @@ export default function ReadingTasksManager({
                   className="mt-3 w-full rounded-lg bg-green-600 px-3 py-2 text-sm font-semibold text-white hover:bg-green-500"
                 >
                   Save exercise
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleDeleteTask(task._id)}
+                  className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-semibold text-red-600 hover:bg-red-100"
+                >
+                  Delete
                 </button>
               </div>
             </details>

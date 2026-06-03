@@ -15,6 +15,7 @@ export default async function updateReadingTasks(req, res) {
 
     const { id } = req.query;
     const { type, name, content } = req.body;
+    // console.log("cloze content:", JSON.stringify(content, null, 2));
 
     if (!id || typeof id !== "string") {
       return res.status(400).json({ message: "Reading task id is required" });

@@ -277,5 +277,5 @@ export interface LessonListeningTask {
 export type ClozeContentItem = {
   text: string;
   blank: boolean;
-  answer?: string;
+  answer: string;
 };
